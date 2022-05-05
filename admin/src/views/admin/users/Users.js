@@ -147,8 +147,8 @@ const Users = () => {
       page: page1,
       perPage: size,
       search: search,
-      role: login_user.role,
-      user_id: login_user._id
+      role: login_user && login_user.role,
+      user_id: login_user && login_user._id
     }
     dispatch(getUsers(post_data))
     setLoading(false)

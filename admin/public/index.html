@@ -42,6 +42,34 @@
       .eUeqdG {
         white-space: normal !important;
       }
+      .avatar-xl {
+        width: 6rem !important;
+        height: 8rem !important;
+      }
+      body::-webkit-scrollbar {
+        width: 0.6em;
+      }
+
+      body::-webkit-scrollbar-track {
+        box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+      }
+
+      body::-webkit-scrollbar-thumb {
+        background-color: darkgrey;
+        outline: 1px solid slategrey;
+      }
+      .sidebar::-webkit-scrollbar {
+        width: 0.6em;
+      }
+
+      .sidebar::-webkit-scrollbar-track {
+        box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+      }
+
+      .sidebar::-webkit-scrollbar-thumb {
+        background-color: darkgrey;
+        outline: 1px solid slategrey;
+      }
     </style>
   </head>
   <body>
@@ -60,4 +88,25 @@
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
   </body>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script>
+    $(document).on("click",".header-toggler",function(){
+      // $(".sidebar-fixed").toggle();
+      if($('.sidebar-fixed').hasClass('hide')){
+        $(".sidebar-fixed").removeClass("hide");
+        $(".sidebar-fixed").removeClass("show");
+        $(".sidebar-backdrop").remove();
+      }else{
+        $(".sidebar-fixed").addClass("hide");
+        $(".sidebar-fixed").addClass("show");
+        $("body").append('<div class="sidebar-backdrop fade show"></div>');
+      }
+    })
+
+    $(document).on("click",".sidebar-backdrop", function(){
+      $(".sidebar-backdrop").remove();
+      $(".sidebar-fixed").removeClass("hide");
+      $(".sidebar-fixed").removeClass("show");
+    })
+  </script>
 </html>

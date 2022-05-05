@@ -8,8 +8,15 @@ var ObjectId = require('mongodb').ObjectID;
 
 exports.get_userdata = (req, res) => {
 
-    users.find({ _id: new ObjectId(req.body.user_id) })
-        .toArray((error, result) => {
+    users.aggregate([
+        { $match: {_id: new ObjectId(req.body.user_id) }},
+        { $lookup: {
+            from:'tbl_roles',
+            localField: "role",
+            foreignField: "id",
+            as: "role_data"                                                                  
+        }},
+    ]).toArray((error, result) => {
 
             if (error) {
                 return res.status(202).json({ message: error });
