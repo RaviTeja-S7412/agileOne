@@ -5,7 +5,7 @@ var db;
 
 function connectToServer( callback ) {
     MongoClient.connect(urlMongo,  { useUnifiedTopology: true , useNewUrlParser: true }, function( err, client ) {
-        db  = client.db('vms');
+        db  = client.db('agileOne');
         return callback( err );
     })
 }

@@ -1,9 +1,8 @@
 const mongo = require('../../connection.js').getDb();
 
+const employees = mongo.collection("tbl_employees");
 const users = mongo.collection("tbl_auths");
-const departments = mongo.collection("tbl_departments");
-const attributes = mongo.collection("tbl_attributes");
-const cities = mongo.collection("tbl_cities");
+const roles = mongo.collection("tbl_roles");
 
 var ObjectId = require('mongodb').ObjectID;
 
@@ -13,7 +12,7 @@ exports.get_userdata = (req, res) => {
         .toArray((error, result) => {
 
             if (error) {
-                return res.status(400).json({ message: error });
+                return res.status(202).json({ message: error });
             }
 
             if (result[0]) {
@@ -24,76 +23,76 @@ exports.get_userdata = (req, res) => {
                 });
                     
             } else {
-                return res.status(400).json({
+                return res.status(202).json({
                     message: error
                 });
             }
         })
 }
 
-exports.get_cties = (req, res) => {
+exports.get_roles = (req, res) => {
 
-    cities.find({"status":1})
+    roles.find({id:{$ne:1}})
         .toArray((error, result) => {
 
             if (error) {
-                return res.status(400).json({ message: error });
+                return res.status(202).json({ message: error });
+            }
+
+            if (result.length > 0) {
+
+                return res.status(200).json({
+                    roles: result,
+                });
+                    
+            } else {
+                return res.status(202).json({
+                    message: "Error Occured."
+                });
+            }
+        })
+}
+
+exports.get_teamleads = (req, res) => {
+
+    users.find({ "created_by": req.body.user_id, "role": 4 })
+        .toArray((error, result) => {
+
+            if (error) {
+                return res.status(202).json({ message: error });
             }
 
             if (result) {
 
                 return res.status(200).json({
-                    cities: result,
+                    team_leads: result,
                 });
                     
             } else {
-                return res.status(400).json({
+                return res.status(202).json({
                     message: error
                 });
             }
         })
 }
 
-exports.get_departments = (req, res) => {
-
-    departments.find({"status":1,"is_publish":1})
+exports.get_tlemployees = (req, res) => {
+    
+    employees.find({ "team_lead": req.body.user_id })
         .toArray((error, result) => {
 
             if (error) {
-                return res.status(400).json({ message: error });
+                return res.status(202).json({ message: error });
             }
 
             if (result) {
 
                 return res.status(200).json({
-                    departments: result,
+                    employees: result,
                 });
                     
             } else {
-                return res.status(400).json({
-                    message: error
-                });
-            }
-        })
-}
-
-exports.get_attributesbyname = (req, res) => {
-
-    attributes.find({})
-        .toArray((error, result) => {
-
-            if (error) {
-                return res.status(400).json({ message: error });
-            }
-
-            if (result) {
-
-                return res.status(200).json({
-                    attributes: result,
-                });
-                    
-            } else {
-                return res.status(400).json({
+                return res.status(202).json({
                     message: error
                 });
             }

@@ -1,17 +1,11 @@
 import React from 'react'
-import {
-  CButton,
-  CCol,
-  CContainer,
-  CFormInput,
-  CInputGroup,
-  CInputGroupText,
-  CRow,
-} from '@coreui/react'
+import { CButton, CCol, CContainer, CInputGroup, CRow } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
-import { cilMagnifyingGlass } from '@coreui/icons'
+import { cilChevronDoubleLeft } from '@coreui/icons'
+import { useNavigate } from 'react-router-dom'
 
 const Page404 = () => {
+  const history = useNavigate()
   return (
     <div className="bg-light min-vh-100 d-flex flex-row align-items-center">
       <CContainer>
@@ -25,11 +19,9 @@ const Page404 = () => {
               </p>
             </div>
             <CInputGroup className="input-prepend">
-              <CInputGroupText>
-                <CIcon icon={cilMagnifyingGlass} />
-              </CInputGroupText>
-              <CFormInput type="text" placeholder="What are you looking for?" />
-              <CButton color="info">Search</CButton>
+              <CButton color="primary" onClick={() => history(-1)}>
+                <CIcon icon={cilChevronDoubleLeft} /> Back To Dashboard
+              </CButton>
             </CInputGroup>
           </CCol>
         </CRow>

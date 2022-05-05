@@ -19,9 +19,9 @@ mongo.connectToServer( function( err) {
   // auth routes
       app.use('/api',require('./routes/admin/auth'));
       app.use('/api',require('./routes/admin/admin'));
-      app.use('/api',require('./routes/admin/categories'));
-      app.use('/api',require('./routes/admin/brands'));
-      app.use('/api',require('./routes/admin/products'));
+      app.use('/api',require('./routes/admin/clients'));
+      app.use('/api',require('./routes/admin/employees'));
+      app.use('/api',require('./routes/admin/leads'));
     
 })
 
