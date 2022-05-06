@@ -126,7 +126,7 @@ const CreateUser = () => {
                 <CRow>
                   <CCol xs={4}>
                     <div className="mb-3">
-                      <CFormLabel htmlFor="name">User Name</CFormLabel>
+                      <CFormLabel htmlFor="name">Name</CFormLabel>
                       <CFormInput
                         type="text"
                         id="name"
