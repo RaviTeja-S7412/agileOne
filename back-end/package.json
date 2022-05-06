@@ -1,0 +1,31 @@
+{
+  "name": "back-end",
+  "version": "1.0.0",
+  "description": "Hermarket ecommerce application",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon ./src/server.js"
+  },
+  "keywords": [
+    "ecommerce",
+    "mern"
+  ],
+  "author": "Ravi Teja S",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "express-validator": "^6.10.1",
+    "jsonwebtoken": "^8.5.1",
+    "moment": "^2.29.3",
+    "mongodb": "^3.6.6",
+    "mongoose": "^5.12.6",
+    "multer": "^1.4.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.7"
+  }
+}

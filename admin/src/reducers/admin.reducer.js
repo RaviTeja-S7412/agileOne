@@ -1,0 +1,71 @@
+/* eslint-disable default-case */
+/* eslint-disable import/no-anonymous-default-export */
+import { authConstants } from '../actions/constants'
+
+const initialState = {
+  roles: [],
+  get_data: '',
+  team_leads: [],
+  get_team_leads: true,
+  employees: [],
+  get_employees: true,
+}
+
+export default (state = initialState, action) => {
+  switch (action.type) {
+    case authConstants.GET_ROLES:
+      state = {
+        ...state,
+        roles: action.payload,
+      }
+      break
+    case authConstants.GET_USERDATA:
+      state = {
+        ...state,
+        get_data: action.payload,
+      }
+      break
+    case authConstants.GET_TEAMLEADS_REQUEST:
+      state = {
+        ...state,
+        get_team_leads: true,
+      }
+      break
+    case authConstants.GET_TEAMLEADS_SUCCESS:
+      state = {
+        ...state,
+        get_team_leads: false,
+        team_leads: action.payload.team_leads,
+      }
+      break
+    case authConstants.GET_TEAMLEADS_FAILURE:
+      state = {
+        ...state,
+        get_team_leads: false,
+        message: action.payload.message,
+      }
+      break
+    case authConstants.GET_TLEMPLOYEES_REQUEST:
+      state = {
+        ...state,
+        get_employees: true,
+      }
+      break
+    case authConstants.GET_TLEMPLOYEES_SUCCESS:
+      state = {
+        ...state,
+        get_employees: false,
+        employees: action.payload.employees,
+      }
+      break
+    case authConstants.GET_TLEMPLOYEES_FAILURE:
+      state = {
+        ...state,
+        get_employees: false,
+        message: action.payload.message,
+      }
+      break
+  }
+
+  return state
+}
