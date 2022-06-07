@@ -14,7 +14,7 @@ const CreateLead = React.lazy(() => import('./views/admin/leads/CreateLead'))
 
 const login_user = localStorage.getItem('user') && JSON.parse(localStorage.getItem('user'))
 const routes = [
-  { path: '/', exact: true, name: 'Home', assignto: [1, 2, 3, 4] },
+  { path: '/', exact: true, name: 'Home', element: Login, assignto: [] },
   { path: '/admin/dashboard', name: 'Dashboard', element: Dashboard, assignto: [] },
   { path: '/admin/login', name: 'Login', element: Login, assignto: [] },
   { path: '/admin/updateProfile', name: 'Update Profile', element: Profile, assignto: [] },
