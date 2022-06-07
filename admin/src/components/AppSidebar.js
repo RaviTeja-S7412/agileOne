@@ -1,8 +1,9 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 
-import { CSidebar, CSidebarBrand, CSidebarNav, CSidebarToggler, CAvatar } from '@coreui/react'
+import { CSidebar, CSidebarBrand, CSidebarNav, CAvatar } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
+import { CNavGroup, CNavItem } from '@coreui/react'
 
 import { AppSidebarNav } from './AppSidebarNav'
 
@@ -14,10 +15,58 @@ import 'simplebar/dist/simplebar.min.css'
 import avatar8 from '../assets/images/avatars/2.jpg'
 
 // sidebar nav config
-import navigation from '../_nav'
+// import navigation from '../_nav'
+import { getRoutes } from 'src/actions/routes.actions'
 
 const AppSidebar = () => {
   const udata = useSelector((state) => state.admin)
+  const routes = useSelector((state) => state.routes)
+  const [urlsData, seturlsData] = useState([])
+
+  useEffect(() => {
+    if (routes.get_routes) {
+      getRoutes()
+    } else {
+      const urls = []
+      if (routes.routes) {
+        routes.routes.forEach((element) => {
+          if (element.component === 'CNavItem') {
+            urls.push({
+              assignto: element.assignto,
+              component: CNavItem,
+              icon: <i className={`${element.icon} nav-icon`}></i>,
+              name: element.name,
+              to: element.to,
+            })
+          } else {
+            const subUrls = []
+            const subItems = []
+
+            element.items.forEach((sitem) => {
+              subItems.push({
+                component: CNavItem,
+                name: sitem.name,
+                to: sitem.to,
+                assignto: element.assignto,
+              })
+            })
+
+            subUrls.push({
+              assignto: element.assignto,
+              component: CNavGroup,
+              icon: <i className={`${element.icon} nav-icon`}></i>,
+              name: element.name,
+              to: element.to,
+              items: subItems,
+            })
+            urls.push(subUrls[0])
+          }
+        })
+      }
+      seturlsData(urls)
+      // console.log(urls)
+    }
+  }, [routes.get_routes])
 
   return (
     <CSidebar position="fixed">
@@ -41,7 +90,7 @@ const AppSidebar = () => {
           </small>
         </div>
         <SimpleBar>
-          <AppSidebarNav items={navigation} />
+          <AppSidebarNav items={urlsData} />
         </SimpleBar>
       </CSidebarNav>
       {/* <CSidebarToggler className="d-none d-lg-flex" /> */}

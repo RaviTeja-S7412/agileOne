@@ -10,7 +10,7 @@ const _nav = [
     name: 'Dashboard',
     to: '/admin/dashboard',
     assignto: [1, 2, 3, 4],
-    icon: <CIcon icon={cilSpeedometer} customClassName="nav-icon" />,
+    icon: <i className="fa fa-car nav-icon"></i>,
   },
   {
     component: CNavGroup,
@@ -67,7 +67,7 @@ const _nav = [
   {
     component: CNavGroup,
     name: 'Settings',
-    to: '/settings',
+    to: '/admin/settings',
     icon: <CIcon icon={cilSettings} customClassName="nav-icon" />,
     assignto: [1, 2, 3],
     items: [

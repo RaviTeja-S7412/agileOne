@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from 'react-redux'
 // import { Router, browserHistory } from 'react-router'
 import './scss/style.scss'
 import { get_userdata } from './helpers/Admin'
+import { getRoutes } from './actions/routes.actions'
 
 const loading = (
   <div className="pt-3 text-center">
@@ -23,6 +24,7 @@ const Page500 = React.lazy(() => import('./views/pages/page500/Page500'))
 export default function App() {
   const token = window.localStorage.getItem('token')
   const auth = useSelector((state) => state.auth)
+  const urls = useSelector((state) => state.routes)
   const history = useNavigate()
   const dispatch = useDispatch()
 
@@ -31,8 +33,11 @@ export default function App() {
       history('/')
     } else {
       dispatch(get_userdata())
+      if (urls && urls.get_routes) {
+        dispatch(getRoutes())
+      }
     }
-  }, [auth.authenticate, dispatch, history, token])
+  }, [auth.authenticate, dispatch, history, token, urls.get_routes])
   return (
     <Suspense fallback={loading}>
       <Routes>

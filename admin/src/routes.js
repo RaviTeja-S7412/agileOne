@@ -2,8 +2,9 @@ import React from 'react'
 
 const Dashboard = React.lazy(() => import('./views/admin/dashboard/Dashboard'))
 const Login = React.lazy(() => import('./views/pages/login/Login'))
-const Users = React.lazy(() => import('./views/admin/users/Users'))
 const Profile = React.lazy(() => import('./views/admin/users/Profile'))
+
+const Users = React.lazy(() => import('./views/admin/users/Users'))
 const Createuser = React.lazy(() => import('./views/admin/users/CreateUser'))
 const Clients = React.lazy(() => import('./views/admin/clients/Clients'))
 const CreateClient = React.lazy(() => import('./views/admin/clients/CreateClient'))
