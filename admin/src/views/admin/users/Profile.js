@@ -222,6 +222,9 @@ const UpdateProfile = () => {
                     <CCol xs={12}>
                       <CCollapse visible={visibleB}>
                         <CCard className="mt-3">
+                          <CCardHeader>
+                            <strong>Update Password</strong>
+                          </CCardHeader>
                           <CCardBody>
                             <CForm onSubmit={updateuserPassword}>
                               <CRow>
