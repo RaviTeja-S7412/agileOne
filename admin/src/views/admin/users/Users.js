@@ -252,7 +252,7 @@ const Users = () => {
             </CCardHeader>
             <CCardBody>
               <DataTable
-                title={login_user && login_user.role === 3 ? 'Team Leads' : 'Users'}
+                // title={login_user && login_user.role === 3 ? 'Team Leads' : 'Users'}
                 columns={columns}
                 data={data}
                 progressPending={loading}

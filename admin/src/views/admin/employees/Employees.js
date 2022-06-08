@@ -261,7 +261,7 @@ const Employees = () => {
             </CCardHeader>
             <CCardBody>
               <DataTable
-                title="Employees"
+                // title="Employees"
                 columns={columns}
                 data={data}
                 progressPending={loading}

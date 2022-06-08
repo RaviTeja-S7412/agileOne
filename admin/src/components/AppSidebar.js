@@ -43,12 +43,14 @@ const AppSidebar = () => {
             const subItems = []
 
             element.items.forEach((sitem) => {
-              subItems.push({
-                component: CNavItem,
-                name: sitem.name,
-                to: sitem.to,
-                assignto: element.assignto,
-              })
+              if (sitem.status === 1) {
+                subItems.push({
+                  component: CNavItem,
+                  name: sitem.name,
+                  to: sitem.to,
+                  assignto: element.assignto,
+                })
+              }
             })
 
             subUrls.push({

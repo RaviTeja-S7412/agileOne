@@ -223,7 +223,7 @@ const Clients = () => {
             </CCardHeader>
             <CCardBody>
               <DataTable
-                title="Clients"
+                // title="Clients"
                 columns={columns}
                 data={data}
                 progressPending={loading}

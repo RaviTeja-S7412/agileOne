@@ -26,7 +26,7 @@ const AppContent = () => {
             urls.push({
               path: item.to,
               name: item.name,
-              element: React.lazy(() => import(item.element)),
+              element: React.lazy(() => import(`../views/admin/${item.element}`)),
               assignto: item.assignto,
             })
           } else {
@@ -34,7 +34,7 @@ const AppContent = () => {
               urls.push({
                 path: sitem.to,
                 name: sitem.name,
-                element: sitem.element,
+                element: React.lazy(() => import(`../views/admin/${sitem.element}`)),
                 assignto: sitem.assignto,
               })
             })
@@ -42,14 +42,13 @@ const AppContent = () => {
             urls.push({
               path: item.to,
               name: item.name,
-              element: React.lazy(() => import(item.element)),
+              element: React.lazy(() => import(`../views/admin/${item.element}`)),
               assignto: item.assignto,
             })
           }
         })
       }
       setroutesData(urls)
-      console.log(urls)
     }
   }, [dynamicroutes.get_routes])
 
@@ -59,7 +58,10 @@ const AppContent = () => {
     { path: '/admin/login', name: 'Login', element: Login, assignto: [] },
     { path: '/admin/updateProfile', name: 'Update Profile', element: Profile, assignto: [] },
   ]
-  routes.push(routesData)
+  routesData.forEach((route) => {
+    routes.push(route)
+  })
+  console.log(routes)
 
   return (
     <CContainer lg>

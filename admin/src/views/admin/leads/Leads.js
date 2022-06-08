@@ -346,7 +346,7 @@ const Leads = () => {
             </CCardHeader>
             <CCardBody>
               <DataTable
-                title="Leads"
+                // title="Leads"
                 columns={columns}
                 data={data}
                 progressPending={loading}
