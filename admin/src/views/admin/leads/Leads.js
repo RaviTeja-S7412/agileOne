@@ -12,6 +12,7 @@ import CIcon from '@coreui/icons-react'
 import { cilPenAlt, cilTrash } from '@coreui/icons'
 import { useNavigate } from 'react-router-dom'
 import swal from 'sweetalert'
+import SearchInput from 'src/components/datatables/SearchInput'
 
 const rotate360 = keyframes`
   from {
@@ -245,29 +246,6 @@ const Leads = () => {
     fetchUsers()
   }
 
-  const subHeaderComponentMemo = useMemo(() => {
-    return (
-      <>
-      <CForm onSubmit={searchData}>
-        <CRow>
-          <CCol xs={12}>
-            <CFormInput
-              type="text"
-              id="name"
-              name="search"
-              placeholder="Search..."
-              defaultValue={searchVal}
-              autoComplete="off"
-              onChange={(e) => setSearchtext(e.target.value)}
-            />
-            <input type="submit" hidden />
-          </CCol>
-        </CRow>
-      </CForm>
-      </>
-    )
-  })
-
   useEffect(() => {
     if (get_leads.get_leads) {
       fetchUsers(currentPage)
@@ -359,7 +337,7 @@ const Leads = () => {
                 paginationRowsPerPageOptions={[10, 20, 30, 40, 50]}
                 onChangePage={handlePageChange}
                 subHeader
-                subHeaderComponent={subHeaderComponentMemo}
+                subHeaderComponent={<SearchInput submitFunction={searchData} setSearchtext={setSearchtext} />}
                 customStyles={customStyles}
               />
             </CCardBody>

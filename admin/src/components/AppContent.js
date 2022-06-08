@@ -3,10 +3,6 @@ import { Navigate, Route, Routes } from 'react-router-dom'
 import { CContainer, CSpinner } from '@coreui/react'
 import { useSelector } from 'react-redux'
 
-// routes config
-// import routes from '../routes'
-import { getRoutes } from 'src/actions/routes.actions'
-
 const AppContent = () => {
   const login_user = JSON.parse(localStorage.getItem('user'))
   const Dashboard = React.lazy(() => import('../views/admin/dashboard/Dashboard'))
@@ -16,41 +12,19 @@ const AppContent = () => {
   const [routesData, setroutesData] = useState([])
 
   useEffect(() => {
-    if (dynamicroutes.get_routes) {
-      getRoutes()
-    } else {
-      const urls = []
-      if (dynamicroutes.routes) {
-        dynamicroutes.routes.forEach((item) => {
-          if (item.component === 'CNavItem') {
-            urls.push({
-              path: item.to,
-              name: item.name,
-              element: React.lazy(() => import(`../views/admin/${item.element}`)),
-              assignto: item.assignto,
-            })
-          } else {
-            item.items.forEach((sitem) => {
-              urls.push({
-                path: sitem.to,
-                name: sitem.name,
-                element: React.lazy(() => import(`../views/admin/${sitem.element}`)),
-                assignto: sitem.assignto,
-              })
-            })
-
-            urls.push({
-              path: item.to,
-              name: item.name,
-              element: React.lazy(() => import(`../views/admin/${item.element}`)),
-              assignto: item.assignto,
-            })
-          }
+    const urls = []
+    if (!dynamicroutes.getAllurlpaths) {
+      dynamicroutes.urlpaths.forEach((item) => {
+        urls.push({
+          path: item.path,
+          name: item.name,
+          element: React.lazy(() => import(`../views/admin/${item.element}`)),
+          assignto: item.assignto,
         })
-      }
-      setroutesData(urls)
+      })
     }
-  }, [dynamicroutes.get_routes])
+    setroutesData(urls)
+  }, [dynamicroutes.getAllurlpaths])
 
   const routes = [
     { path: '/', exact: true, name: 'Home', element: Login, assignto: [] },
@@ -61,7 +35,6 @@ const AppContent = () => {
   routesData.forEach((route) => {
     routes.push(route)
   })
-  console.log(routes)
 
   return (
     <CContainer lg>

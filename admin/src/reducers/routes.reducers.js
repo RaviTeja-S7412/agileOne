@@ -7,6 +7,8 @@ const initState = {
   error: null,
   routes: [],
   get_routes: true,
+  urlpaths: [],
+  getAllurlpaths: true,
   get_singleroute: true,
   is_route_added: false,
   pageIndex: 0,
@@ -119,6 +121,21 @@ export default (state = initState, action) => {
         loading: false,
         get_routes: false,
         message: action.payload.message,
+      }
+      break
+    case routesConstants.GET_ALLURLPATHS_REQUEST:
+      state = {
+        ...state,
+        loading: true,
+        getAllurlpaths: true,
+      }
+      break
+    case routesConstants.GET_ALLURLPATHS_SUCCESS:
+      state = {
+        ...state,
+        loading: false,
+        getAllurlpaths: false,
+        urlpaths: action.payload,
       }
       break
     /* case leadConstants.GET_SINGLELEAD_REQUEST:

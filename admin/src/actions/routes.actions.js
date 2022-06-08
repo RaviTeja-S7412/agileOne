@@ -1,5 +1,6 @@
 import { routesConstants } from './constants'
 import axios from '../helpers/axios'
+import { useSelector } from 'react-redux'
 /*
 export const createLead = (udata) => {
   return async (dispatch) => {
@@ -89,11 +90,63 @@ export const getRoutes = () => {
         type: routesConstants.GET_ROUTES_SUCCESS,
         payload: res.data.all_routes,
       })
+
+      const urls = []
+      if (res.data.all_routes) {
+        const auth_data = JSON.parse(localStorage.getItem('user'))
+        res.data.all_routes.forEach((item) => {
+          if (item.component === 'CNavItem') {
+            urls.push({
+              path: item.to,
+              name: item.name,
+              breadname: item.breadname,
+              element: item.element,
+              assignto: item.assignto,
+            })
+          } else {
+            item.items.forEach((sitem) => {
+              if (sitem.assignto.includes(auth_data.role)) {
+                urls.push({
+                  path: sitem.to,
+                  name: sitem.name,
+                  breadname: sitem.breadname,
+                  element: sitem.element,
+                  assignto: sitem.assignto,
+                })
+              }
+            })
+
+            urls.push({
+              path: item.to,
+              name: item.name,
+              breadname: item.breadname,
+              element: item.element,
+              assignto: item.assignto,
+            })
+          }
+        })
+      }
+
+      dispatch({
+        type: routesConstants.GET_ALLURLPATHS_SUCCESS,
+        payload: urls,
+      })
     } else {
       dispatch({
         type: routesConstants.GET_ROUTES_FAILURE,
         payload: { message: res.data.message },
       })
     }
+  }
+}
+
+export const getAllurlpaths = () => {
+  return async (dispatch) => {
+    const dynamicroutes = useSelector((state) => state.routes)
+    dispatch({ type: routesConstants.GET_ALLURLPATHS_REQUEST })
+    dispatch({
+      type: routesConstants.GET_ALLURLPATHS_SUCCESS,
+      payload: dynamicroutes.all_routes,
+    })
   }
 }

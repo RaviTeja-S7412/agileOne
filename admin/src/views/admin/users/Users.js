@@ -4,13 +4,14 @@ import React, { useMemo, useState, useEffect } from 'react'
 import styled, { keyframes } from 'styled-components'
 import '@coreui/coreui/dist/css/coreui.css'
 import DataTable from 'react-data-table-component'
-import { CCard, CRow, CCol, CCardHeader, CCardBody, CFormInput, CForm } from '@coreui/react'
+import { CCard, CRow, CCol, CCardHeader, CCardBody } from '@coreui/react'
 import { useSelector, useDispatch } from 'react-redux'
 import { deleteUser, getUsers } from 'src/actions/auth.actions'
 import CIcon from '@coreui/icons-react'
 import { cilPenAlt, cilTrash } from '@coreui/icons'
 import { useNavigate } from 'react-router-dom'
 import swal from 'sweetalert'
+import SearchInput from 'src/components/datatables/SearchInput'
 
 const rotate360 = keyframes`
   from {
@@ -75,7 +76,7 @@ const Users = () => {
 
   const editUser = (id) => {
     if (login_user.role === 3) {
-      location('/admin/users/update-team-lead?id='+id)
+      location('/admin/team-leads/update-team-lead?id='+id)
     } else {
       location('/admin/users/update-user?id='+id)
     }
@@ -170,29 +171,6 @@ const Users = () => {
     fetchUsers()
   }
 
-  const subHeaderComponentMemo = useMemo(() => {
-    return (
-      <>
-      <CForm onSubmit={searchData}>
-        <CRow>
-          <CCol xs={12}>
-            <CFormInput
-              type="text"
-              id="name"
-              name="search"
-              placeholder="Search..."
-              defaultValue={searchVal}
-              autoComplete="off"
-              onChange={(e) => setSearchtext(e.target.value)}
-            />
-            <input type="submit" hidden />
-          </CCol>
-        </CRow>
-      </CForm>
-      </>
-    )
-  })
-
   useEffect(() => {
     if (user_data.get_users) {
       fetchUsers(currentPage)
@@ -265,7 +243,7 @@ const Users = () => {
                 paginationRowsPerPageOptions={[10, 20, 30, 40, 50]}
                 onChangePage={handlePageChange}
                 subHeader
-                subHeaderComponent={subHeaderComponentMemo}
+                subHeaderComponent={<SearchInput submitFunction={searchData} setSearchtext={setSearchtext} />}
               />
             </CCardBody>
           </CCard>

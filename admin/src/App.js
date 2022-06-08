@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux'
 // import { Router, browserHistory } from 'react-router'
 import './scss/style.scss'
 import { get_userdata } from './helpers/Admin'
-import { getRoutes } from './actions/routes.actions'
+import { getAllurlpaths, getRoutes } from './actions/routes.actions'
 
 const loading = (
   <div className="pt-3 text-center">

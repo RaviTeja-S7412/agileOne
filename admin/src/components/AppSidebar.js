@@ -43,12 +43,12 @@ const AppSidebar = () => {
             const subItems = []
 
             element.items.forEach((sitem) => {
-              if (sitem.status === 1) {
+              if (sitem.assignto.includes(udata.get_data.role) && sitem.status === 1) {
                 subItems.push({
                   component: CNavItem,
                   name: sitem.name,
                   to: sitem.to,
-                  assignto: element.assignto,
+                  assignto: sitem.assignto,
                 })
               }
             })
@@ -66,9 +66,8 @@ const AppSidebar = () => {
         })
       }
       seturlsData(urls)
-      // console.log(urls)
     }
-  }, [routes.get_routes])
+  }, [routes.get_routes, routes.routes, udata.get_data.role])
 
   return (
     <CSidebar position="fixed">
