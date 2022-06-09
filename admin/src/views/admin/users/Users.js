@@ -1,7 +1,6 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useMemo, useState, useEffect } from 'react'
-import styled, { keyframes } from 'styled-components'
 import '@coreui/coreui/dist/css/coreui.css'
 import DataTable from 'react-data-table-component'
 import { CCard, CRow, CCol, CCardHeader, CCardBody } from '@coreui/react'
@@ -11,36 +10,9 @@ import CIcon from '@coreui/icons-react'
 import { cilPenAlt, cilTrash } from '@coreui/icons'
 import { useNavigate } from 'react-router-dom'
 import swal from 'sweetalert'
-import SearchInput from 'src/components/datatables/SearchInput'
+import {SearchInput,CustomLoader,customStyles} from 'src/components/datatables/index'
+import Pagination from 'src/components/datatables/Pagination'
 
-const rotate360 = keyframes`
-  from {
-    transform: rotate(0deg);
-  }
-
-  to {
-    transform: rotate(360deg);
-  }
-`
-const Spinner = styled.div`
-  margin: 16px;
-  animation: ${rotate360} 1s linear infinite;
-  transform: translateZ(0);
-  border-top: 2px solid grey;
-  border-right: 2px solid grey;
-  border-bottom: 2px solid grey;
-  border-left: 4px solid black;
-  background: transparent;
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-`
-const CustomLoader = () => (
-  <div style={{ padding: '24px' }}>
-    <Spinner />
-    <div>Loading...</div>
-  </div>
-)
 const Users = () => {
   const [data, setData] = useState([])
   const [loading, setLoading] = useState(false)
@@ -48,7 +20,6 @@ const Users = () => {
   const [perPage, setPerPage] = useState(10)
   const [searchText, setSearchtext] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
-  const [searchVal, setSearchval] = useState('')
   const user_data = useSelector((state) => state.auth)
   const dispatch = useDispatch()
   const location = useNavigate()
@@ -175,47 +146,8 @@ const Users = () => {
     if (user_data.get_users) {
       fetchUsers(currentPage)
     } else {
-      const udata = []
-      if (user_data.users) {
-        var index = 0
-        user_data.users.forEach((element) => {
-          var prefix = ''
-          if (user_data.users.length === (index+1) && user_data.nextPage === true) {
-            prefix = currentPage*(index+1)
-          } else {
-            var suffix = ''
-            if (perPage === 50){
-              suffix = currentPage-1 === 0 ? '' : (currentPage-1)*5
-            } else if (perPage === 40) {
-              suffix = currentPage-1 === 0 ? '' : (currentPage-1)*4
-            } else if (perPage === 30) {
-              suffix = currentPage-1 === 0 ? '' : (currentPage-1)*3
-            } else if (perPage === 20) {
-              suffix = currentPage-1 === 0 ? '' : (currentPage-1)*2
-            } else if (perPage === 10) {
-              suffix = currentPage-1 === 0 ? '' : (currentPage-1)
-            }
-            if (user_data.users.length === (index+1) && user_data.nextPage === false && user_data.users.length >= 10) {
-              prefix =  currentPage*(index+1)
-            }else{
-              prefix =  suffix+''+(index+1)
-            }
-          }
-          udata.push({
-            serial: prefix,
-            admin_name: element.admin_name,
-            id: element.id,
-            email: element.email,
-            mobile: element.mobile,
-            designation: element.designation,
-            role_name: element.role_name,
-            // created_by: element.created_by,
-            // updated_by: element.updated_by,
-            created_date: element.created_date,
-          })
-          index++
-        })
-      }
+      const displayColumns = ["id","admin_name","mobile","email","designation","role_name","created_date"];
+      var udata = Pagination(user_data.users, user_data.nextPage, currentPage, perPage, displayColumns)
       setData(udata)
       setTotalRows(user_data.total_users_count)
     }
@@ -244,6 +176,7 @@ const Users = () => {
                 onChangePage={handlePageChange}
                 subHeader
                 subHeaderComponent={<SearchInput submitFunction={searchData} setSearchtext={setSearchtext} />}
+                customStyles={customStyles}
               />
             </CCardBody>
           </CCard>

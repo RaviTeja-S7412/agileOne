@@ -37,7 +37,6 @@ const AppBreadcrumb = () => {
   routesData.forEach((route) => {
     routes.push(route)
   })
-  console.log(routes)
   const currentLocation = useLocation().pathname
 
   const getRouteName = (pathname, routes) => {

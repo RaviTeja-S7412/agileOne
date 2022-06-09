@@ -2,46 +2,18 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useMemo, useState, useEffect } from 'react'
-import styled, { keyframes } from 'styled-components'
 import '@coreui/coreui/dist/css/coreui.css'
 import DataTable from 'react-data-table-component'
-import { CCard, CRow, CCol, CCardHeader, CCardBody, CFormInput, CForm, CButton } from '@coreui/react'
+import { CCard, CRow, CCol, CCardHeader, CCardBody, CButton } from '@coreui/react'
 import { useSelector, useDispatch } from 'react-redux'
 import { deleteEmployee, getEmployees } from 'src/actions/employees.actions'
 import CIcon from '@coreui/icons-react'
 import { cilPenAlt, cilTrash } from '@coreui/icons'
 import { useNavigate } from 'react-router-dom'
 import swal from 'sweetalert'
-import SearchInput from 'src/components/datatables/SearchInput'
+import {SearchInput,CustomLoader,customStyles} from 'src/components/datatables/index'
+import Pagination from 'src/components/datatables/Pagination'
 
-const rotate360 = keyframes`
-  from {
-    transform: rotate(0deg);
-  }
-
-  to {
-    transform: rotate(360deg);
-  }
-`
-const Spinner = styled.div`
-  margin: 16px;
-  animation: ${rotate360} 1s linear infinite;
-  transform: translateZ(0);
-  border-top: 2px solid grey;
-  border-right: 2px solid grey;
-  border-bottom: 2px solid grey;
-  border-left: 4px solid black;
-  background: transparent;
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-`
-const CustomLoader = () => (
-  <div style={{ padding: '24px' }}>
-    <Spinner />
-    <div>Loading...</div>
-  </div>
-)
 const Employees = () => {
   const [data, setData] = useState([])
   const [loading, setLoading] = useState(false)
@@ -49,7 +21,6 @@ const Employees = () => {
   const [perPage, setPerPage] = useState(10)
   const [searchText, setSearchtext] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
-  const [searchVal, setSearchval] = useState('')
   const get_employees = useSelector((state) => state.employees)
   const dispatch = useDispatch()
   const location = useNavigate()
@@ -174,48 +145,8 @@ const Employees = () => {
     if (get_employees.get_employees) {
       fetchUsers(currentPage)
     } else {
-      const udata = []
-      if (get_employees.employees) {
-        var index = 0
-        get_employees.employees.forEach((element) => {
-          var prefix = ''
-          if (get_employees.employees.length === (index+1) && get_employees.nextPage === true) {
-            prefix = currentPage*(index+1)
-          } else {
-            var suffix = ''
-            if (perPage === 50){
-              suffix = currentPage-1 === 0 ? '' : (currentPage-1)*5
-            } else if (perPage === 40) {
-              suffix = currentPage-1 === 0 ? '' : (currentPage-1)*4
-            } else if (perPage === 30) {
-              suffix = currentPage-1 === 0 ? '' : (currentPage-1)*3
-            } else if (perPage === 20) {
-              suffix = currentPage-1 === 0 ? '' : (currentPage-1)*2
-            } else if (perPage === 10) {
-              suffix = currentPage-1 === 0 ? '' : (currentPage-1)
-            }
-
-            if (get_employees.employees.length === (index+1) && get_employees.nextPage === false && get_employees.employees.length >= 10) {
-              prefix =  currentPage*(index+1)
-            }else{
-              prefix =  suffix+''+(index+1)
-            }
-          }
-          udata.push({
-            serial: prefix,
-            employee_id: element.employee_id,
-            employee_name: element.employee_name,
-            mobile_number: element.mobile_number,
-            email: element.email,
-            office_email: element.office_email,
-            designation: element.designation,
-            address: element.address,
-            id: element.id,
-            created_date: element.created_date,
-          })
-          index++
-        })
-      }
+      const displayColumns = ["id","employee_name","employee_id","mobile_number","email","office_email","address","designation","created_date"];
+      var udata = Pagination(get_employees.employees, get_employees.nextPage, currentPage, perPage, displayColumns)
       setData(udata)
       setTotalRows(get_employees.total_users_count)
     }
@@ -253,6 +184,7 @@ const Employees = () => {
                 onChangePage={handlePageChange}
                 subHeader
                 subHeaderComponent={<SearchInput submitFunction={searchData} setSearchtext={setSearchtext} />}
+                customStyles={customStyles}
               />
             </CCardBody>
           </CCard>
