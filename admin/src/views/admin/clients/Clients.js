@@ -22,6 +22,7 @@ const Clients = () => {
   const [searchText, setSearchtext] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
   const get_clients = useSelector((state) => state.clients)
+  const admin = useSelector((state) => state.admin)
   const dispatch = useDispatch()
   const location = useNavigate()
 
@@ -46,11 +47,11 @@ const Clients = () => {
   }
 
   const handleEdit = (id) => {
-    location('/admin/settings/clients/updateClient?id='+id)
+    location(admin.get_data.uploads_folder + 'admin/settings/clients/updateClient?id='+id)
   }
 
   const handleCreate = () => {
-    location('/admin/settings/clients/createClient')
+    location(admin.get_data.uploads_folder + 'admin/settings/clients/createClient')
   }
 
   const columns = useMemo(

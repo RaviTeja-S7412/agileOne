@@ -13,6 +13,7 @@ import { useNavigate } from 'react-router-dom'
 import swal from 'sweetalert'
 import {SearchInput,CustomLoader,customStyles} from 'src/components/datatables/index'
 import Pagination from 'src/components/datatables/Pagination'
+import { get_teamleads } from 'src/helpers/Admin'
 
 const Employees = () => {
   const [data, setData] = useState([])
@@ -22,9 +23,20 @@ const Employees = () => {
   const [searchText, setSearchtext] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
   const get_employees = useSelector((state) => state.employees)
+  const get_allteamleads = useSelector((state) => state.admin)
+  const [hideColumn, setHidecolumn] = useState(false)
   const dispatch = useDispatch()
   const location = useNavigate()
   const login_user = localStorage.getItem('user') && JSON.parse(localStorage.getItem('user'))
+
+  useEffect(() => {
+    if (login_user.role === 3 && get_allteamleads.get_team_leads) {
+      dispatch(get_teamleads())
+    }
+    if (login_user.role === 4) {
+      setHidecolumn(true)
+    }
+  }, [get_allteamleads.get_team_leads])
 
   const handleDelete = (id) => {
     swal({
@@ -47,10 +59,11 @@ const Employees = () => {
   }
 
   const handleEdit = (id) => {
-    location('/admin/employees/update-employee?id='+id)
+    location(get_allteamleads.get_data.uploads_folder + 'admin/employees/update-employee?id='+id)
   }
+
   const handleCreate = () => {
-    location('/admin/employees/create-employee')
+    location(get_allteamleads.get_data.uploads_folder + 'admin/employees/create-employee')
   }
 
   const columns = useMemo(
@@ -104,6 +117,12 @@ const Employees = () => {
         sortable: true,
       },
       {
+        name: 'Team Lead',
+        selector: (row) => `${row.team_lead}`,
+        sortable: true,
+        omit: hideColumn,
+      },
+      {
         name: 'Created Date',
         selector: (row) => `${row.created_date}`,
         sortable: true,
@@ -113,14 +132,25 @@ const Employees = () => {
     [handleDelete],
   )
 
+  let all_teamleads = get_allteamleads && get_allteamleads.team_leads
+  const team_leads_data = []
+  if (all_teamleads && all_teamleads.length > 0) {
+    all_teamleads.forEach((element) => {
+      team_leads_data.push(element._id)
+    })
+  }
+
   const fetchUsers = (page1, size = perPage, search = searchText) => {
     setLoading(true)
     const post_data = {
       page: page1,
       perPage: size,
       search: search,
+      role: login_user && login_user.role,
+      team_leads: team_leads_data,
       team_lead_id: login_user && login_user._id,
     }
+    console.log(post_data)
     dispatch(getEmployees(post_data))
     setLoading(false)
   }
@@ -145,12 +175,12 @@ const Employees = () => {
     if (get_employees.get_employees) {
       fetchUsers(currentPage)
     } else {
-      const displayColumns = ["id","employee_name","employee_id","mobile_number","email","office_email","address","designation","created_date"];
+      const displayColumns = ["id","employee_name","employee_id","mobile_number","email","office_email","address","designation","team_lead","created_date"];
       var udata = Pagination(get_employees.employees, get_employees.nextPage, currentPage, perPage, displayColumns)
       setData(udata)
       setTotalRows(get_employees.total_users_count)
     }
-  }, [get_employees.employees, get_employees.get_employees])
+  }, [get_employees.employees, get_employees.get_employees, get_allteamleads.get_team_leads])
   return (
     <>
       <CRow>
@@ -159,7 +189,7 @@ const Employees = () => {
             <CCardHeader>
               <CRow>
                 <CCol xs={4}>
-                  <strong>All Employees</strong>
+                  <strong>All Recruiters</strong>
                 </CCol>
                 <CCol xs={8}>
                   <CButton color="primary" onClick={handleCreate} size="sm" className="float-end">

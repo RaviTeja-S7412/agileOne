@@ -14,6 +14,8 @@ import {
 import { useSelector, useDispatch } from 'react-redux'
 import { get_singleemployee, createEmployee, updateEmployee } from 'src/actions/employees.actions'
 import { useNavigate, useSearchParams } from 'react-router-dom'
+import Select from 'react-select'
+import { get_teamleads } from 'src/helpers/Admin'
 
 const CreateClient = () => {
   const dispatch = useDispatch()
@@ -21,6 +23,7 @@ const CreateClient = () => {
   const [searchParams, setSearchParams] = useSearchParams()
   const id = searchParams.get('id')
   const get_employee = useSelector((state) => state.employees)
+  const admin = useSelector((state) => state.admin)
   const login_user = localStorage.getItem('user') && JSON.parse(localStorage.getItem('user'))
 
   const [employee_id, setEmployeeid] = useState('')
@@ -30,6 +33,9 @@ const CreateClient = () => {
   const [office_email, setOfficeemail] = useState('')
   const [address, setAddress] = useState('')
   const [designation, setDesignation] = useState('')
+  const [empteam_lead, setempteam_lead] = useState('')
+  const [team_lead, setteam_lead] = useState('')
+  const [password, setPassword] = useState('')
 
   useEffect(() => {
     if (id) {
@@ -44,7 +50,7 @@ const CreateClient = () => {
       setDesignation('')
     }
     if (get_employee && get_employee.is_employee_added) {
-      location('/admin/employees')
+      location(admin.get_data.uploads_folder + 'admin/employees')
     }
   }, [id, get_employee.is_employee_added])
 
@@ -57,6 +63,8 @@ const CreateClient = () => {
       setOfficeemail(get_employee.employee_data && get_employee.employee_data.office_email)
       setAddress(get_employee.employee_data && get_employee.employee_data.address)
       setDesignation(get_employee.employee_data && get_employee.employee_data.designation)
+      setempteam_lead(get_employee.employee_data && get_employee.employee_data.team_lead)
+      setteam_lead(get_employee.employee_data && get_employee.employee_data.team_lead)
     }
   }, [get_employee.employee_data, id])
 
@@ -70,9 +78,16 @@ const CreateClient = () => {
       office_email: office_email,
       address: address,
       designation: designation,
-      team_lead_id: login_user && login_user._id,
     }
+
+    if (login_user.role == 3) {
+      fdata['team_lead_id'] = typeof empteam_lead === 'object' ? empteam_lead.value : team_lead
+    } else {
+      fdata['team_lead_id'] = login_user && login_user._id
+    }
+
     if (id === null) {
+      fdata['password'] = password
       dispatch(createEmployee(fdata))
     } else {
       fdata['id'] = id
@@ -80,26 +95,48 @@ const CreateClient = () => {
     }
   }
 
+  let all_teamleads = admin && admin.team_leads
+  const team_leads_data = []
+  if (all_teamleads && all_teamleads.length > 0) {
+    var index1 = 0
+    all_teamleads.forEach((element) => {
+      if (empteam_lead == element._id) {
+        setempteam_lead(index1)
+      }
+      team_leads_data.push({
+        label: element.admin_name,
+        value: element._id,
+      })
+      index1++
+    })
+  }
+
+  useEffect(() => {
+    if (login_user.role === 3 && admin.get_team_leads) {
+      dispatch(get_teamleads())
+    }
+  }, [admin.get_team_leads, dispatch])
+
   return (
     <>
       <CRow>
         <CCol xs={12}>
           <CCard className="mb-3 border-top-primary border-top-3">
             <CCardHeader>
-              <strong>{id === null ? 'Create' : 'Update'} Employee</strong>
+              <strong>{id === null ? 'Create' : 'Update'} Recruiter</strong>
             </CCardHeader>
             <CCardBody>
               <CForm onSubmit={saveData} id="fdata">
                 <CRow>
                   <CCol xs={4}>
                     <div className="mb-3">
-                      <CFormLabel htmlFor="name">Employee ID</CFormLabel>
+                      <CFormLabel htmlFor="name">Recruiter ID</CFormLabel>
                       <CFormInput
                         type="text"
                         id="name"
                         name="employee_id"
                         required
-                        placeholder="Enter Employee ID"
+                        placeholder="Enter Recruiter ID"
                         defaultValue={employee_id}
                         autoComplete="off"
                         onChange={(e) => setEmployeeid(e.target.value)}
@@ -108,13 +145,13 @@ const CreateClient = () => {
                   </CCol>
                   <CCol xs={4}>
                     <div className="mb-3">
-                      <CFormLabel htmlFor="name">Employee Name</CFormLabel>
+                      <CFormLabel htmlFor="name">Recruiter Name</CFormLabel>
                       <CFormInput
                         type="text"
                         id="name"
                         name="employee_name"
                         required
-                        placeholder="Enter Employee Name"
+                        placeholder="Enter Recruiter Name"
                         defaultValue={employee_name}
                         autoComplete="off"
                         onChange={(e) => setEmployeename(e.target.value)}
@@ -180,6 +217,42 @@ const CreateClient = () => {
                       />
                     </div>
                   </CCol>
+                  {login_user.role === 3 ? (
+                    <CCol xs={4}>
+                      <div className="mb-3">
+                        <CFormLabel htmlFor="role">Team Leads</CFormLabel>
+                        <Select
+                          className="basic-single"
+                          classNamePrefix="Select Team Lead"
+                          value={team_leads_data && team_leads_data[empteam_lead]}
+                          name="employee_id"
+                          options={team_leads_data}
+                          required
+                          onChange={(e) => setempteam_lead(e)}
+                        />
+                      </div>
+                    </CCol>
+                  ) : (
+                    ''
+                  )}
+                  {id === null ? (
+                    <CCol xs={4}>
+                      <div className="mb-3">
+                        <CFormLabel htmlFor="name">Password</CFormLabel>
+                        <CFormInput
+                          type="text"
+                          id="name"
+                          name="password"
+                          placeholder="Enter Password"
+                          defaultValue={password}
+                          autoComplete="off"
+                          onChange={(e) => setPassword(e.target.value)}
+                        />
+                      </div>
+                    </CCol>
+                  ) : (
+                    ''
+                  )}
                   <CCol xs={4}>
                     <div className="mb-3">
                       <CFormLabel htmlFor="name">Address</CFormLabel>

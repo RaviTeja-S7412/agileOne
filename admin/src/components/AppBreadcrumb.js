@@ -10,6 +10,7 @@ const AppBreadcrumb = () => {
   const Login = React.lazy(() => import('../views/pages/login/Login'))
   const Profile = React.lazy(() => import('../views/admin/users/Profile'))
   const dynamicroutes = useSelector((state) => state.routes)
+  const admin = useSelector((state) => state.admin)
   const [routesData, setroutesData] = useState([])
 
   useEffect(() => {
@@ -45,6 +46,7 @@ const AppBreadcrumb = () => {
   }
   const getBreadcrumbs = (location) => {
     const breadcrumbs = []
+    const prevPage = localStorage.getItem('prevPage')
     location.split('/').reduce((prev, curr, index, array) => {
       const currentPathname = `${prev}/${curr}`
       const routeName = getRouteName(currentPathname, routes)
@@ -53,6 +55,7 @@ const AppBreadcrumb = () => {
           pathname: currentPathname,
           name: routeName,
           active: index + 1 === array.length ? true : false,
+          prevPage: prevPage,
         })
       return currentPathname
     })
@@ -63,11 +66,20 @@ const AppBreadcrumb = () => {
 
   return (
     <CBreadcrumb className="m-0 ms-2">
-      <CBreadcrumbItem href="/">Home</CBreadcrumbItem>
+      <CBreadcrumbItem href={admin.get_data.uploads_folder + 'admin/dashboard'}>
+        Home
+      </CBreadcrumbItem>
       {breadcrumbs.map((breadcrumb, index) => {
         return (
           <CBreadcrumbItem
-            {...(breadcrumb.active ? { active: true } : { href: breadcrumb.pathname })}
+            {...(breadcrumb.active
+              ? { active: true }
+              : {
+                  href:
+                    breadcrumb.pathname === '/admin/consultants'
+                      ? `/admin/consultants/${breadcrumb.prevPage}`
+                      : breadcrumb.pathname,
+                })}
             key={index}
           >
             {breadcrumb.name}

@@ -1,11 +1,16 @@
 import { authConstants } from '../actions/constants'
 import axios from '../helpers/axios'
+import { useSelector } from 'react-redux'
 
 export const get_userdata = () => {
   return async (dispatch) => {
     let udata = JSON.parse(localStorage.getItem('user'))
+    let loginType = localStorage.getItem('loginType')
     // dispatch({ type: authConstants.GET_USERDATA });
-    const res = await axios.post(`/admin/get_userdata`, { user_id: udata._id })
+    const res = await axios.post(`/admin/get_userdata`, {
+      user_id: udata._id,
+      loginType: loginType,
+    })
 
     if (res.status === 200) {
       return dispatch({
@@ -76,6 +81,47 @@ export const get_employees = (team_lead_id) => {
         type: authConstants.GET_TLEMPLOYEES_FAILURE,
         payload: { error: res.data.message },
       })
+    }
+  }
+}
+
+export const get_dashboard_data = () => {
+  return async (dispatch) => {
+    let udata = JSON.parse(localStorage.getItem('user'))
+    dispatch({
+      type: authConstants.GET_DASHBOARDDATA_REQUEST,
+    })
+
+    if (udata.role == 3) {
+      dispatch(get_teamleads())
+      const admin = useSelector((state) => state.admin)
+      let all_teamleads = admin && admin.team_leads
+      const team_leads_data = []
+      if (all_teamleads && all_teamleads.length > 0) {
+        all_teamleads.forEach((element) => {
+          team_leads_data.push(element._id)
+        })
+      }
+      console.log(team_leads_data)
+    }
+
+    const res = await axios.post(`/admin/get_dashboarddata`, {
+      user_id: udata._id,
+      role: udata.role,
+    })
+
+    if (res.status === 200) {
+      return dispatch({
+        type: authConstants.GET_DASHBOARDDATA_SUCCESS,
+        payload: res.data,
+      })
+    } else {
+      if (res.status === 400) {
+        dispatch({
+          type: authConstants.GET_DASHBOARDDATA_FAILURE,
+          payload: { error: res.data.message },
+        })
+      }
     }
   }
 }

@@ -3,8 +3,14 @@ import { Route, Routes, useNavigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 // import { Router, browserHistory } from 'react-router'
 import './scss/style.scss'
-import { get_userdata } from './helpers/Admin'
-import { getAllurlpaths, getRoutes } from './actions/routes.actions'
+import { get_dashboard_data, get_userdata } from './helpers/Admin'
+import { getRoutes } from './actions/routes.actions'
+import {
+  authConstants,
+  clientConstants,
+  employeeConstants,
+  leadConstants,
+} from './actions/constants'
 
 const loading = (
   <div className="pt-3 text-center">
@@ -24,25 +30,33 @@ const Page500 = React.lazy(() => import('./views/pages/page500/Page500'))
 export default function App() {
   const token = window.localStorage.getItem('token')
   const auth = useSelector((state) => state.auth)
+  const admin = useSelector((state) => state.admin)
   const urls = useSelector((state) => state.routes)
   const history = useNavigate()
   const dispatch = useDispatch()
 
   useEffect(() => {
     if (!token) {
-      history('/')
+      history('/vms/admin/login')
     } else {
       dispatch(get_userdata())
       if (urls && urls.get_routes) {
         dispatch(getRoutes())
       }
+      if (admin.get_dashboard_data) {
+        dispatch(get_dashboard_data())
+      }
     }
-  }, [auth.authenticate, dispatch, history, token, urls.get_routes])
+    dispatch({ type: employeeConstants.GET_EMPLOYEES_REQUEST })
+    dispatch({ type: leadConstants.GET_LEADS_REQUEST })
+    dispatch({ type: authConstants.GET_USERS_REQUEST })
+    dispatch({ type: clientConstants.GET_CLIENTS_REQUEST })
+  }, [auth.authenticate, dispatch, history, token, urls.get_routes, admin.get_dashboard_data])
   return (
     <Suspense fallback={loading}>
       <Routes>
-        <Route exact path="/" name="Login Page" element={<Login />} />
-        <Route exact path="/admin/login" name="Login Page" element={<Login />} />
+        <Route exact path="/vms/admin/login" name="Login Page" element={<Login />} />
+        <Route exact path="/vms/admin/login" name="Login Page" element={<Login />} />
         <Route exact path="/register" name="Register Page" element={<Register />} />
         <Route exact path="/admin/404" name="Page 404" element={<Page404 />} />
         <Route exact path="/500" name="Page 500" element={<Page500 />} />

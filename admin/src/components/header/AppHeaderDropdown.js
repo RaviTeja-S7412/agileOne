@@ -26,14 +26,18 @@ const AppHeaderDropdown = () => {
   }
 
   const Profile = () => {
-    location('/admin/updateProfile')
+    location(udata.get_data.uploads_folder + 'admin/updateProfile')
   }
 
   return (
     <CDropdown variant="nav-item">
       <CDropdownToggle placement="bottom-end" className="py-0" caret={false}>
         <CAvatar
-          src={udata.get_data && udata.get_data.user_image ? udata.get_data.user_image : avatar8}
+          src={
+            udata.get_data && udata.get_data.user_image
+              ? udata.get_data.uploads_folder + udata.get_data.user_image
+              : avatar8
+          }
           size="md"
         />
       </CDropdownToggle>

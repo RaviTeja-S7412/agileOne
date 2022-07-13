@@ -42,7 +42,7 @@ const CreateClient = () => {
   const [bill_rate, setbill_rate] = useState('')
   const [pay_rate, setpay_rate] = useState('')
   const [margin, setmargin] = useState('')
-  const [doj, setdoj] = useState('')
+  const [tsd, settsd] = useState('')
   const [employee_id, setemployee_id] = useState('')
   const [femployee_id, setFemployee_id] = useState('')
   const [team_lead, setteam_lead] = useState('')
@@ -64,13 +64,13 @@ const CreateClient = () => {
       setbill_rate('')
       setpay_rate('')
       setmargin('')
-      setdoj('')
+      settsd('')
       setemployee_id('')
       setteam_lead('')
       setaccounts_manager('')
     }
     if (get_lead && get_lead.is_lead_added) {
-      location('/admin/leads')
+      location(get_allteamleads.get_data.uploads_folder + 'admin/consultants/offers')
     }
   }, [id, get_lead.is_lead_added])
 
@@ -90,7 +90,7 @@ const CreateClient = () => {
       setbill_rate(get_lead.lead_data && get_lead.lead_data.bill_rate)
       setpay_rate(get_lead.lead_data && get_lead.lead_data.pay_rate)
       setmargin(get_lead.lead_data && get_lead.lead_data.margin)
-      setdoj(get_lead.lead_data && get_lead.lead_data.doj)
+      settsd(get_lead.lead_data && get_lead.lead_data.tentative_start_date)
       setemployee_id(get_lead.lead_data && get_lead.lead_data.employee_id)
       setFemployee_id(get_lead.lead_data && get_lead.lead_data.employee_id)
       setteam_lead(get_lead.lead_data && get_lead.lead_data.team_lead)
@@ -177,7 +177,6 @@ const CreateClient = () => {
       dispatch(get_employees(login_user._id))
     }
   }, [get_allteamleads.get_employees, dispatch])
-  console.log(get_allteamleads)
   // employees end
 
   const saveData = (e) => {
@@ -195,7 +194,7 @@ const CreateClient = () => {
       bill_rate: parseFloat(bill_rate),
       pay_rate: parseFloat(pay_rate),
       margin: parseFloat(margin),
-      doj: doj,
+      tentative_start_date: tsd,
       employee_id: typeof employee_id === 'object' ? employee_id.value : femployee_id,
       team_lead: typeof empteam_lead === 'object' ? empteam_lead.value : team_lead,
       accounts_manager: login_user.role === 3 ? login_user._id : login_user.created_by,
@@ -249,7 +248,7 @@ const CreateClient = () => {
         <CCol xs={12}>
           <CCard className="mb-3 border-top-primary border-top-3">
             <CCardHeader>
-              <strong>{id === null ? 'Create' : 'Update'} Lead</strong>
+              <strong>{id === null ? 'Create' : 'Update'} Offer</strong>
             </CCardHeader>
             <CCardBody>
               <CForm onSubmit={saveData} id="fdata">
@@ -425,16 +424,16 @@ const CreateClient = () => {
                   </CCol>
                   <CCol xs={4}>
                     <div className="mb-3">
-                      <CFormLabel htmlFor="name">Date Of Joining</CFormLabel>
+                      <CFormLabel htmlFor="name">Tentative Start Date</CFormLabel>
                       <CFormInput
                         type="date"
                         id="name"
-                        name="doj"
+                        name="tentative_start_date"
                         required
-                        placeholder="Date Of Joining"
-                        defaultValue={doj}
+                        placeholder="Tentative Start Date"
+                        defaultValue={tsd}
                         autoComplete="off"
-                        onChange={(e) => setdoj(e.target.value)}
+                        onChange={(e) => settsd(e.target.value)}
                       />
                     </div>
                   </CCol>
@@ -470,7 +469,7 @@ const CreateClient = () => {
                       />
                     </div>
                   </CCol>
-                  {id != null ? (
+                  {/* {id != null ? (
                     <CCol xs={4}>
                       <div className="mb-3">
                         <CFormLabel htmlFor="role">Status</CFormLabel>
@@ -489,7 +488,7 @@ const CreateClient = () => {
                     </CCol>
                   ) : (
                     ''
-                  )}
+                  )} */}
                   <CCol xs={4} style={{ marginTop: '30px' }}>
                     <div className="mb-3">
                       <CFormLabel htmlFor="role"></CFormLabel>

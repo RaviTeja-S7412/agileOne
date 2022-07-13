@@ -39,7 +39,7 @@ const UpdateProfile = () => {
       dispatch(get_singleuser({ user_id: id }))
     }
     if (udata && udata.is_user_added) {
-      location('/admin/team-leads')
+      location(udata.get_data.uploads_folder + '/admin/team-leads')
     }
   }, [id, udata.is_user_added])
 
@@ -94,7 +94,7 @@ const UpdateProfile = () => {
                       thumbnail
                       src={
                         udata.get_data && udata.get_data.user_image
-                          ? udata.get_data.user_image
+                          ? udata.get_data.uploads_folder + udata.get_data.user_image
                           : avatar8
                       }
                       width={200}

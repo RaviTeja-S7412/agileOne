@@ -49,9 +49,9 @@ const CreateUser = () => {
     }
     if (auth && auth.is_user_added) {
       if (roles.get_data.role === 1 || roles.get_data.role === 2) {
-        location('/admin/users-list')
+        location(roles.get_data.uploads_folder + 'admin/users-list')
       } else {
-        location('/admin/team-leads')
+        location(roles.get_data.uploads_folder + 'admin/team-leads')
       }
     }
   }, [id, auth.is_user_added, roles.get_data.role])

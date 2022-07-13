@@ -27,10 +27,10 @@ const AppContent = () => {
   }, [dynamicroutes.getAllurlpaths])
 
   const routes = [
-    { path: '/', exact: true, name: 'Home', element: Login, assignto: [] },
-    { path: '/admin/dashboard', name: 'Dashboard', element: Dashboard, assignto: [] },
-    { path: '/admin/login', name: 'Login', element: Login, assignto: [] },
-    { path: '/admin/updateProfile', name: 'Update Profile', element: Profile, assignto: [] },
+    { path: '/vms/admin/login', exact: true, name: 'Home', element: Login, assignto: [] },
+    { path: '/vms/admin/dashboard', name: 'Dashboard', element: Dashboard, assignto: [] },
+    { path: '/vms/admin/login', name: 'Login', element: Login, assignto: [] },
+    { path: '/vms/admin/updateProfile', name: 'Update Profile', element: Profile, assignto: [] },
   ]
   routesData.forEach((route) => {
     routes.push(route)

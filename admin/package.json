@@ -2,7 +2,7 @@
   "name": "vms",
   "version": "4.2.0",
   "description": "Agile one platform",
-  "homepage": "/",
+  "homepage": "/vms/",
   "license": "MIT",
   "author": "Ravi Teja",
   "scripts": {

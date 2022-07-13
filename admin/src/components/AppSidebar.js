@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/alt-text */
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 
@@ -71,21 +72,27 @@ const AppSidebar = () => {
 
   return (
     <CSidebar position="fixed">
-      <CSidebarBrand className="d-none d-md-flex" to="/">
-        <CIcon className="sidebar-brand-full" icon={logoNegative} height={35} />
-        <CIcon className="sidebar-brand-narrow" icon={sygnet} height={35} />
+      <CSidebarBrand className="d-none d-md-flex" to="/vms">
+        {/* <CIcon className="sidebar-brand-full" icon={logoNegative} height={35} />
+        <CIcon className="sidebar-brand-narrow" icon={sygnet} height={35} /> */}
+        <img src={udata.get_data.uploads_folder + 'images/logo.png'} height="50px" />
       </CSidebarBrand>
       <CSidebarNav>
         <div className="container" align="center">
           <CAvatar
-            src={udata.get_data && udata.get_data.user_image ? udata.get_data.user_image : avatar8}
+            src={
+              udata.get_data && udata.get_data.user_image
+                ? udata.get_data.uploads_folder + udata.get_data.user_image
+                : avatar8
+            }
             size="xl"
           />
           <br />
           <small style={{ marginBottom: '20px' }}>
             <strong>
               {udata.get_data && udata.get_data.admin_name} (
-              {udata.get_data && udata.get_data.role_data[0].role})<br />
+              {udata.get_data && udata.get_data.role_data[0].role}
+              )<br />
             </strong>
             ({udata.get_data && udata.get_data.email})
           </small>

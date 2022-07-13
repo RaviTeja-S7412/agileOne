@@ -89,81 +89,6 @@ exports.update_client = (req, res) => {
     });
 }
 
-
-exports.get_clients = (req, res) => {
-
-    var perPage = req.body.perPage ? req.body.perPage : 10,
-    page = req.body.page-1
-    var search = req.body.search
-    const data = []
-
-    clients.aggregate([
-        { "$sort": { '_id' : -1 } },
-        { "$limit": perPage * req.body.page },
-        { "$skip": perPage * page },
-        {$match: 
-            {"status":1,"deleted":0,
-                $or: 
-                [ 
-                    { client_name: { "$regex": search, "$options": "i"} },
-                ] 
-            },
-        },
-    ])
-    .toArray(function (err, db_data) {
-
-            if(err){
-                return res.status(202).json({message:err});
-            }
-
-            if(db_data.length > 0){
-                db_data.forEach((element) => {
-                  
-                    data.push({
-                        "id": element._id,
-                        "client_name": element.client_name,
-                        "created_date": new Date(element.created_date).toLocaleDateString('en-US'),
-                    })
-
-                });
-            }
-
-            clients.find({"status":1,"deleted":0, $or: 
-                [ 
-                    { client_name: { "$regex": search, "$options": "i"} },
-                ] 
-            }).count(function (err, count) {
-                return res.status(200).json({
-                    total_users: data,
-                    pageIndex: req.body.page,
-                    total_pages: Math.ceil(count / perPage),
-                    total_users_count: count,
-                    prevPage: page > 0 ? true : false,
-                    nextPage: Math.ceil(count / perPage) === req.body.page ? false : true
-                });   
-            })
-        })
-}
-
-exports.deleteClient = (req, res) => {
-
-    const id = req.body.user_id;
-    if(!id){
-        return res.status(202).json({ message: "Client ID is Required." });
-    }
-
-    clients.deleteOne({ _id: new ObjectId(id) },(error, result) => {
-        
-        if (result.deletedCount > 0) {
-            return res.status(200).json({ message: "Client Deleted Successfully" });
-        }else{
-            return res.status(202).json({ message: "Client Not Found" });
-        }
-
-    });
-
-}
-
 exports.get_singleclient = (req, res) => {
 
     const id = req.body.user_id;
@@ -183,6 +108,71 @@ exports.get_singleclient = (req, res) => {
 
 }
 */
+
+exports.get_routes = (req, res) => {
+
+    var perPage = req.body.perPage ? req.body.perPage : 10,
+    page = req.body.page-1
+    var search = req.body.search
+    const data = []
+
+    routes.aggregate([
+        { "$sort": { '_id' : -1 } },
+        { "$limit": perPage * req.body.page },
+        { "$skip": perPage * page },
+        {$match: 
+            {"status":1,"deleted":0,
+                $or: 
+                [ 
+                    { component: { "$regex": search, "$options": "i"} },
+                    { name: { "$regex": search, "$options": "i"} },
+                    { breadname: { "$regex": search, "$options": "i"} },
+                    { icon: { "$regex": search, "$options": "i"} },
+                ] 
+            },
+        },
+    ])
+    .toArray(function (err, db_data) {
+
+            if(err){
+                return res.status(202).json({message:err});
+            }
+
+            if(db_data.length > 0){
+                db_data.forEach((element) => {
+                  
+                    data.push({
+                        "id": element._id,
+                        "component": element.component,
+                        "name": element.name,
+                        "breadname": element.breadname,
+                        "to": element.to,
+                        "icon": element.icon,
+                        "element": element.element,
+                    })
+
+                });
+            }
+
+            routes.find({"status":1,"deleted":0, $or: 
+                [ 
+                    { component: { "$regex": search, "$options": "i"} },
+                    { name: { "$regex": search, "$options": "i"} },
+                    { breadname: { "$regex": search, "$options": "i"} },
+                    { icon: { "$regex": search, "$options": "i"} },
+                ] 
+            }).count(function (err, count) {
+                return res.status(200).json({
+                    total_users: data,
+                    pageIndex: req.body.page,
+                    total_pages: Math.ceil(count / perPage),
+                    total_users_count: count,
+                    prevPage: page > 0 ? true : false,
+                    nextPage: Math.ceil(count / perPage) === req.body.page ? false : true
+                });   
+            })
+        })
+}
 
 exports.get_allroutes = (req, res) => {
 

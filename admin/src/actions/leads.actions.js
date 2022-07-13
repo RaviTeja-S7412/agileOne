@@ -39,6 +39,25 @@ export const updateLead = (udata) => {
   }
 }
 
+export const updateStartdate = (udata) => {
+  return async (dispatch) => {
+    dispatch({ type: leadConstants.UPDATE_LEAD_REQUEST })
+    const res = await axios.post(`/admin/update_startdate`, udata)
+
+    if (res.status === 200) {
+      dispatch({
+        type: leadConstants.UPDATE_LEAD_SUCCESS,
+        payload: { message: res.data.message },
+      })
+    } else {
+      dispatch({
+        type: leadConstants.UPDATE_LEAD_FAILURE,
+        payload: { message: res.data.message },
+      })
+    }
+  }
+}
+
 export const deleteLead = (udata) => {
   return async (dispatch) => {
     dispatch({ type: leadConstants.DELETE_LEAD_REQUEST })

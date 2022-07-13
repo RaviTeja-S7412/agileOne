@@ -13,6 +13,7 @@ import swal from 'sweetalert'
 import {SearchInput,CustomLoader,customStyles} from 'src/components/datatables/index'
 import Pagination from 'src/components/datatables/Pagination'
 
+
 const Users = () => {
   const [data, setData] = useState([])
   const [loading, setLoading] = useState(false)
@@ -21,6 +22,7 @@ const Users = () => {
   const [searchText, setSearchtext] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
   const user_data = useSelector((state) => state.auth)
+  const admin = useSelector((state) => state.admin)
   const dispatch = useDispatch()
   const location = useNavigate()
   const login_user = JSON.parse(localStorage.getItem('user'))
@@ -47,9 +49,9 @@ const Users = () => {
 
   const editUser = (id) => {
     if (login_user.role === 3) {
-      location('/admin/team-leads/update-team-lead?id='+id)
+      location(admin.get_data.uploads_folder + 'admin/team-leads/update-team-lead?id='+id)
     } else {
-      location('/admin/users/update-user?id='+id)
+      location(admin.get_data.uploads_folder + 'admin/users/update-user?id='+id)
     }
   }
 
@@ -152,6 +154,7 @@ const Users = () => {
       setTotalRows(user_data.total_users_count)
     }
   }, [user_data.users, user_data.get_users])
+
   return (
     <>
       <CRow>
