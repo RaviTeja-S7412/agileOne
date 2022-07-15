@@ -1,11 +1,11 @@
 const mongo = require('../../connection.js').getDb();
+const moment = require('moment');
 
 const leads = mongo.collection("tbl_leads");
 var ObjectId = require('mongodb').ObjectID;
 
 
 exports.create_lead = (req, res) => {
-    console.log(req.body)
     if(!req.body.candidate_name){
         return res.status(202).json({ message: "Candidate Name is Required." });
     }
@@ -46,14 +46,15 @@ exports.create_lead = (req, res) => {
         "bill_rate": parseFloat(req.body.bill_rate),
         "pay_rate": parseFloat(req.body.pay_rate),
         "margin": parseFloat(req.body.margin),
-        "doj": req.body.doj,
+        "tentative_start_date": req.body.tentative_start_date,
+        "start_date": "",
         "employee_id": req.body.employee_id,
         "team_lead": req.body.team_lead,
         "accounts_manager": req.body.accounts_manager,
         "created_date": new Date(),
         "created_by": req.body.user_id,
         "updated_date": "",
-        "status" : 1,
+        "status" : 2,
         "deleted" : 0
     }
     
@@ -126,8 +127,7 @@ exports.update_lead = (req, res) => {
         "bill_rate": req.body.bill_rate,
         "pay_rate": req.body.pay_rate,
         "margin": req.body.margin,
-        "doj": req.body.doj,
-        "status": req.body.status,
+        "tentative_start_date": req.body.tentative_start_date,
         "employee_id": req.body.employee_id,
         "team_lead": req.body.team_lead,
         "accounts_manager": req.body.accounts_manager,
@@ -174,20 +174,37 @@ exports.get_leads = (req, res) => {
     var perPage = req.body.perPage ? req.body.perPage : 10,
     page = req.body.page-1
     var search = req.body.search
+    var status = req.body.status
     const data = []
 
     const role = req.body.role;
 
     var column_name = "";
-    if(role === 3){
+    if(role === 5){
+        column_name = "employee_id";     
+    }else if(role === 4){
+        column_name = "team_lead";     
+    }else if(role === 3){
        column_name = "accounts_manager";     
     }else{
        column_name = "created_by";
     }
-    var query = {};
-    query[column_name] = req.body.user_id;
-    query["deleted"] = 0;
+    
+    var filterStatus = "";
+    if(status == "offers"){
+        filterStatus = 2;
+    }else if(status == "active"){
+        filterStatus = 1;
+    }else if(status == "exit"){
+        filterStatus = 0;
+    }
 
+    var query = {};
+    if(role !== 1 && role !== 2)
+        query[column_name] = req.body.user_id;
+
+    query["deleted"] = 0;
+    query["status"] = filterStatus;
     leads.aggregate([
         { "$sort": { '_id' : -1 } },
         { "$limit": perPage * req.body.page },
@@ -272,6 +289,7 @@ exports.get_leads = (req, res) => {
                   
                     data.push({
                         "id": element._id,
+                        "status": element.status,
                         "candidate_name": element.candidate_name,
                         "direct_client": element.direct_client_data.length > 0 ?  element.direct_client_data[0].client_name : '',
                         "end_client": element.end_client_data.length > 0 ?  element.end_client_data[0].client_name : '',
@@ -283,8 +301,8 @@ exports.get_leads = (req, res) => {
                         "bill_rate": element.bill_rate,
                         "pay_rate": element.pay_rate,
                         "margin": element.margin,
-                        "doj": element.doj,
-                        "status": element.status,
+                        "start_date": element.start_date == "" ? "" : element.start_date,
+                        "tentative_start_date": element.tentative_start_date,
                         "employee_name": element.employee_data.length > 0 ?  element.employee_data[0].employee_name : '',
                         "team_lead": element.team_data.length > 0 ?  element.team_data[0].admin_name : '',
                         "accounts_manager": element.account_manager_data.length > 0 ?  element.account_manager_data[0].admin_name : '',
@@ -360,3 +378,58 @@ exports.get_singlelead = (req, res) => {
 
 }
 
+exports.update_startdate = (req, res) => {
+    
+    console.log(req.body)
+    if(!req.body.offer_id){
+        return res.status(202).json({ message: "ID is Required." });
+    }
+
+    if(req.body.ref == 'exit'){
+
+        const data = {
+            "status": 0,
+            "exit_date": moment().format('YYYY-MM-DD')
+        }
+
+        leads.updateOne({_id:new ObjectId(req.body.offer_id)}, {$set: data}, function (error, result) {
+            if (error) {
+                return res.status(202).json({
+                    message: 'error occured'
+                });
+            }
+
+            if (result) {
+                return res.status(200).json({
+                    message: "Offer status Updated Successfully"
+                })
+            }
+        });
+
+    }else{
+
+        if(!req.body.start_date){
+            return res.status(202).json({ message: "Start Date is Required." });
+        }
+        
+        const data = {
+            "start_date": req.body.start_date,
+            "status": 1
+        }
+
+        leads.updateOne({_id:new ObjectId(req.body.offer_id)}, {$set: data}, function (error, result) {
+            if (error) {
+                return res.status(202).json({
+                    message: 'error occured'
+                });
+            }
+
+            if (result) {
+                return res.status(200).json({
+                    message: "Start Date Updated Successfully"
+                })
+            }
+        });
+
+    }
+}

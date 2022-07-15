@@ -1,45 +1,19 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useMemo, useState, useEffect } from 'react'
-import styled, { keyframes } from 'styled-components'
 import '@coreui/coreui/dist/css/coreui.css'
 import DataTable from 'react-data-table-component'
-import { CCard, CRow, CCol, CCardHeader, CCardBody, CFormInput, CForm } from '@coreui/react'
+import { CCard, CRow, CCol, CCardHeader, CCardBody } from '@coreui/react'
 import { useSelector, useDispatch } from 'react-redux'
 import { deleteUser, getUsers } from 'src/actions/auth.actions'
 import CIcon from '@coreui/icons-react'
 import { cilPenAlt, cilTrash } from '@coreui/icons'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import swal from 'sweetalert'
+import {SearchInput,CustomLoader,customStyles} from 'src/components/datatables/index'
+import Pagination from 'src/components/datatables/Pagination'
 
-const rotate360 = keyframes`
-  from {
-    transform: rotate(0deg);
-  }
 
-  to {
-    transform: rotate(360deg);
-  }
-`
-const Spinner = styled.div`
-  margin: 16px;
-  animation: ${rotate360} 1s linear infinite;
-  transform: translateZ(0);
-  border-top: 2px solid grey;
-  border-right: 2px solid grey;
-  border-bottom: 2px solid grey;
-  border-left: 4px solid black;
-  background: transparent;
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-`
-const CustomLoader = () => (
-  <div style={{ padding: '24px' }}>
-    <Spinner />
-    <div>Loading...</div>
-  </div>
-)
 const Users = () => {
   const [data, setData] = useState([])
   const [loading, setLoading] = useState(false)
@@ -47,10 +21,13 @@ const Users = () => {
   const [perPage, setPerPage] = useState(10)
   const [searchText, setSearchtext] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
-  const [searchVal, setSearchval] = useState('')
   const user_data = useSelector((state) => state.auth)
+  const admin = useSelector((state) => state.admin)
+  const [searchParams, setSearchParams] = useSearchParams()
+
   const dispatch = useDispatch()
   const location = useNavigate()
+  const ref = searchParams.get('ref')
   const login_user = JSON.parse(localStorage.getItem('user'))
 
   const handleDelete = (id) => {
@@ -75,9 +52,9 @@ const Users = () => {
 
   const editUser = (id) => {
     if (login_user.role === 3) {
-      location('/admin/users/update-team-lead?id='+id)
+      location(admin.get_data.uploads_folder + 'admin/team-leads/update-team-lead?id='+id)
     } else {
-      location('/admin/users/update-user?id='+id)
+      location(admin.get_data.uploads_folder + 'admin/users/update-user?id='+id)
     }
   }
 
@@ -148,7 +125,8 @@ const Users = () => {
       perPage: size,
       search: search,
       role: login_user && login_user.role,
-      user_id: login_user && login_user._id
+      user_id: login_user && login_user._id,
+      ref: ref
     }
     dispatch(getUsers(post_data))
     setLoading(false)
@@ -170,78 +148,17 @@ const Users = () => {
     fetchUsers()
   }
 
-  const subHeaderComponentMemo = useMemo(() => {
-    return (
-      <>
-      <CForm onSubmit={searchData}>
-        <CRow>
-          <CCol xs={12}>
-            <CFormInput
-              type="text"
-              id="name"
-              name="search"
-              placeholder="Search..."
-              defaultValue={searchVal}
-              autoComplete="off"
-              onChange={(e) => setSearchtext(e.target.value)}
-            />
-            <input type="submit" hidden />
-          </CCol>
-        </CRow>
-      </CForm>
-      </>
-    )
-  })
-
   useEffect(() => {
     if (user_data.get_users) {
       fetchUsers(currentPage)
     } else {
-      const udata = []
-      if (user_data.users) {
-        var index = 0
-        user_data.users.forEach((element) => {
-          var prefix = ''
-          if (user_data.users.length === (index+1) && user_data.nextPage === true) {
-            prefix = currentPage*(index+1)
-          } else {
-            var suffix = ''
-            if (perPage === 50){
-              suffix = currentPage-1 === 0 ? '' : (currentPage-1)*5
-            } else if (perPage === 40) {
-              suffix = currentPage-1 === 0 ? '' : (currentPage-1)*4
-            } else if (perPage === 30) {
-              suffix = currentPage-1 === 0 ? '' : (currentPage-1)*3
-            } else if (perPage === 20) {
-              suffix = currentPage-1 === 0 ? '' : (currentPage-1)*2
-            } else if (perPage === 10) {
-              suffix = currentPage-1 === 0 ? '' : (currentPage-1)
-            }
-            if (user_data.users.length === (index+1) && user_data.nextPage === false && user_data.users.length >= 10) {
-              prefix =  currentPage*(index+1)
-            }else{
-              prefix =  suffix+''+(index+1)
-            }
-          }
-          udata.push({
-            serial: prefix,
-            admin_name: element.admin_name,
-            id: element.id,
-            email: element.email,
-            mobile: element.mobile,
-            designation: element.designation,
-            role_name: element.role_name,
-            // created_by: element.created_by,
-            // updated_by: element.updated_by,
-            created_date: element.created_date,
-          })
-          index++
-        })
-      }
+      const displayColumns = ["id","admin_name","mobile","email","designation","role_name","created_date"];
+      var udata = Pagination(user_data.users, user_data.nextPage, currentPage, perPage, displayColumns)
       setData(udata)
       setTotalRows(user_data.total_users_count)
     }
   }, [user_data.users, user_data.get_users])
+
   return (
     <>
       <CRow>
@@ -252,7 +169,7 @@ const Users = () => {
             </CCardHeader>
             <CCardBody>
               <DataTable
-                title={login_user && login_user.role === 3 ? 'Team Leads' : 'Users'}
+                // title={login_user && login_user.role === 3 ? 'Team Leads' : 'Users'}
                 columns={columns}
                 data={data}
                 progressPending={loading}
@@ -265,7 +182,8 @@ const Users = () => {
                 paginationRowsPerPageOptions={[10, 20, 30, 40, 50]}
                 onChangePage={handlePageChange}
                 subHeader
-                subHeaderComponent={subHeaderComponentMemo}
+                subHeaderComponent={<SearchInput submitFunction={searchData} setSearchtext={setSearchtext} />}
+                customStyles={customStyles}
               />
             </CCardBody>
           </CCard>

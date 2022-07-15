@@ -20,6 +20,7 @@ const CreateClient = () => {
   const [searchParams, setSearchParams] = useSearchParams()
   const id = searchParams.get('id')
   const get_client = useSelector((state) => state.clients)
+  const admin = useSelector((state) => state.admin)
 
   const [client_name, setClientname] = useState('')
 
@@ -30,7 +31,7 @@ const CreateClient = () => {
       setClientname('')
     }
     if (get_client && get_client.is_client_added) {
-      location('/admin/settings/clients')
+      location(admin.get_data.uploads_folder + 'admin/settings/clients')
     }
   }, [id, get_client.is_client_added])
 

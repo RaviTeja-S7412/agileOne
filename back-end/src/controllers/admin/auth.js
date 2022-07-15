@@ -5,11 +5,12 @@ const multer  = require('multer');
 const path = require('path');
 
 const users = mongo.collection("tbl_auths");
+const employees = mongo.collection("tbl_employees");
 var ObjectId = require('mongodb').ObjectID;
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, '../admin/public/uploads/users')
+        cb(null, '../uploads/users')
     },
     filename: function (req, file, cb) {
         // You could rename the file name
@@ -76,8 +77,9 @@ exports.signup = (req, res) => {
 
 exports.signin = (req, res) => {
     
-    users.find({ email: req.body.email })
-        .toArray((error, result) => {
+    if(req.body.loginref === "admin"){
+
+        users.find({ email: req.body.email }).toArray((error, result) => {
             if (error) {
                 return res.status(202).json({ message: error });
             }
@@ -93,6 +95,7 @@ exports.signin = (req, res) => {
                     res.status(200).json({
                         token,
                         user: user,
+                        loginType: "admin",
                         message : "Logged in successfully"
                     });
                 } else {
@@ -107,11 +110,48 @@ exports.signin = (req, res) => {
                 });
             }
         })
+
+    }else{
+
+        employees.find({ office_email: req.body.email }).toArray((error, result) => {
+            if (error) {
+                return res.status(202).json({ message: error });
+            }
+
+            if (result[0]) {
+
+                var user = result[0];
+                var data = bcrypt.compareSync(req.body.password, user.password);
+                
+                if (data) {
+                    const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
+                    res.cookie("token", token, { expiresIn: "1d" });
+                    res.status(200).json({
+                        token,
+                        loginType: "employee",
+                        user: {"_id":user._id,"admin_name":user.employee_name,"email":user.email,"mobile":user.mobile,"user_image":user.user_image,"role":user.role,"team_lead":user.team_lead},
+                        message : "Logged in successfully"
+                    });
+                } else {
+                    return res.status(202).json({
+                        message: "Invalid Password"
+                    });
+                }
+
+            } else {
+                return res.status(202).json({
+                    message: "User not registered with us."
+                });
+            }
+        })
+
+    }
 }
 
 exports.updateProfile = [upload.single("file"),function(req,res){
     
     const id = req.body.user_id;
+    const role = req.body.role;
 
     if(!id){
         return res.status(202).json({ message: "User ID is Required." });
@@ -124,30 +164,67 @@ exports.updateProfile = [upload.single("file"),function(req,res){
         profile_pic = "/uploads/users/"+req.file.filename;
     }
 
-    const user_data = {
-        "user_image" : profile_pic,
-        "admin_name": req.body.admin_name,
-        "email": req.body.email,
-        "mobile": req.body.mobile,
-        "designation": req.body.designation,
-    }
+    if(role == 5){
 
-    users.updateOne({_id:new ObjectId(id)}, {$set: user_data}, function (error, result) {
-        if (error) {
-            return res.status(202).json({
-                message: "Error Occured"
-            });
+        var user_data = {
+            "user_image" : profile_pic,
+            "employee_name": req.body.admin_name,
+            "email": req.body.email,
+            "mobile": req.body.mobile,
+            "designation": req.body.designation,
         }
-        if (result) {
-            users.find({ _id: new ObjectId(id) })
-                .toArray((error, userdata) => {
-                return res.status(200).json({
-                    message: "Updated Successfully",
-                    user : userdata[0]
-                })
-            });
+
+    }else{
+
+        var user_data = {
+            "user_image" : profile_pic,
+            "admin_name": req.body.admin_name,
+            "email": req.body.email,
+            "mobile": req.body.mobile,
+            "designation": req.body.designation,
         }
-    });
+
+    }    
+
+    if(role == 3){
+
+        employees.updateOne({_id:new ObjectId(id)}, {$set: user_data}, function (error, result) {
+            if (error) {
+                return res.status(202).json({
+                    message: "Error Occured"
+                });
+            }
+            if (result) {
+                users.find({ _id: new ObjectId(id) })
+                    .toArray((error, userdata) => {
+                    return res.status(200).json({
+                        message: "Updated Successfully",
+                        user : userdata[0]
+                    })
+                });
+            }
+        });
+
+    }else{
+
+        users.updateOne({_id:new ObjectId(id)}, {$set: user_data}, function (error, result) {
+            if (error) {
+                return res.status(202).json({
+                    message: "Error Occured"
+                });
+            }
+            if (result) {
+                users.find({ _id: new ObjectId(id) })
+                    .toArray((error, userdata) => {
+                    return res.status(200).json({
+                        message: "Updated Successfully",
+                        user : userdata[0]
+                    })
+                });
+            }
+        });
+
+    }
 
 }];
 
@@ -322,13 +399,23 @@ exports.getUsers = (req, res) => {
     var perPage = req.body.perPage ? req.body.perPage : 10,
     page = req.body.page-1
     var search = req.body.search
+    var ref = req.body.ref
     const usersData = []
 
     var cby = ''; 
+    var role = ''; 
     if(req.body.role == 1){
         cby = {$ne: ""};
     }else{
         cby = req.body.user_id;
+    }
+
+    if(ref == 'teamleads'){
+        role = 4
+    }else if(ref == 'ams'){
+        role = 3
+    }else{
+        role = {$ne:1}
     }
 
     users.aggregate([
@@ -336,7 +423,7 @@ exports.getUsers = (req, res) => {
         { "$limit": perPage * req.body.page },
         { "$skip": perPage * page },
         {$match: 
-            {role:{$ne:1},created_by: cby,
+            {role:role,created_by: cby,
                 $or: 
                 [ 
                     { admin_name: { "$regex": search, "$options": "i"} }, 
@@ -376,7 +463,7 @@ exports.getUsers = (req, res) => {
                 });
             }
 
-            users.find({role:{$ne:1},created_by: cby, $or: 
+            users.find({role:role,created_by: cby, $or: 
                 [ 
                     { admin_name: { "$regex": search, "$options": "i"} }, 
                     { email: { "$regex": search, "$options": "i"} }, 

@@ -9,8 +9,9 @@ export const login = (user) => {
       ...user,
     })
     if (res.status === 200) {
-      const { token, user } = res.data
+      const { token, user, loginType } = res.data
       localStorage.setItem('token', token)
+      localStorage.setItem('loginType', loginType)
       localStorage.setItem('user', JSON.stringify(user))
       dispatch({
         type: authConstants.LOGIN_SUCCESS,

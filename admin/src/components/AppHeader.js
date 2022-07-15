@@ -21,7 +21,7 @@ const AppHeader = () => {
         <CHeaderToggler className="ps-1">
           <CIcon icon={cilMenu} size="lg" />
         </CHeaderToggler>
-        <CHeaderBrand className="mx-auto d-md-none" to="/">
+        <CHeaderBrand className="mx-auto d-md-none" to="/vms">
           <CIcon icon={logo} height={48} alt="Logo" />
         </CHeaderBrand>
         <CHeaderNav className="ms-3">

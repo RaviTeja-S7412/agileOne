@@ -70,6 +70,32 @@ export default (state = initState, action) => {
         message: action.payload.message,
       }
       break
+    case leadConstants.UPDATE_STARTDATE_REQUEST:
+      state = {
+        ...state,
+        loading: true,
+        get_leads: false,
+        is_lead_added: false,
+      }
+      break
+    case leadConstants.UPDATE_STARTDATE_SUCCESS:
+      state = {
+        ...state,
+        loading: false,
+        get_leads: true,
+        is_lead_added: true,
+        message: action.payload.message,
+      }
+      break
+    case leadConstants.UPDATE_STARTDATE_FAILURE:
+      state = {
+        ...state,
+        loading: false,
+        get_leads: false,
+        is_lead_added: false,
+        message: action.payload.message,
+      }
+      break
     case leadConstants.DELETE_LEAD_REQUEST:
       state = {
         ...state,

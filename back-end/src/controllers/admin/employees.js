@@ -1,4 +1,5 @@
 const mongo = require('../../connection.js').getDb();
+const bcrypt = require('bcrypt');
 
 const employees = mongo.collection("tbl_employees");
 var ObjectId = require('mongodb').ObjectID;
@@ -23,12 +24,14 @@ exports.create_employee = (req, res) => {
         "employee_name": req.body.employee_name,
         "employee_id": req.body.employee_id,
         "mobile_number": req.body.mobile_number,
+        "password": bcrypt.hashSync(req.body.password, 10),
         "email": req.body.email,
         "office_email": req.body.office_email,
         "address": req.body.address,
         "designation": req.body.designation,
         "created_date": new Date(),
         "team_lead": req.body.team_lead_id,
+        "role": 5,
         "updated_date": "",
         "status" : 1,
         "deleted" : 0
@@ -127,13 +130,27 @@ exports.get_employees = (req, res) => {
     page = req.body.page-1
     var search = req.body.search
     const data = []
+    var role = req.body.role;
+    var team_leads = req.body.team_leads;
+
+    var query = {};
+    if(role == 1){
+        
+    }else if(role == 3){
+        query["team_lead"] = { $in : team_leads };
+    }else{
+        query["team_lead"] = req.body.team_lead_id;
+    }
+    query["deleted"] = 0;
+    query["status"] = 1;
 
     employees.aggregate([
         { "$sort": { '_id' : -1 } },
         { "$limit": perPage * req.body.page },
         { "$skip": perPage * page },
         {$match: 
-            {"status":1,"deleted":0,"team_lead":req.body.team_lead_id,
+            {
+                $and: [query],
                 $or: 
                 [ 
                     { employee_name: { "$regex": search, "$options": "i"} },
@@ -146,6 +163,17 @@ exports.get_employees = (req, res) => {
                 ] 
             },
         },
+        { "$addFields": {
+            team_lead: {
+                "$toObjectId": "$team_lead"
+            },
+        }},
+        {$lookup: {
+            from:'tbl_auths',
+            localField: "team_lead",
+            foreignField: "_id",
+            as: "team_data"                                                                  
+        }},
     ])
     .toArray(function (err, db_data) {
 
@@ -153,6 +181,7 @@ exports.get_employees = (req, res) => {
                 return res.status(202).json({message:err});
             }
 
+            
             if(db_data.length > 0){
                 db_data.forEach((element) => {
                   
@@ -165,13 +194,14 @@ exports.get_employees = (req, res) => {
                         "office_email": element.office_email,
                         "address": element.address,
                         "designation": element.designation,
+                        "team_lead": element.team_data.length > 0 ?  element.team_data[0].admin_name : '',
                         "created_date": new Date(element.created_date).toLocaleDateString('en-US'),
                     })
 
                 });
             }
 
-            employees.find({"status":1,"deleted":0,"team_lead":req.body.team_lead_id, $or: 
+            employees.find({$and: [query], $or: 
                 [ 
                     { employee_name: { "$regex": search, "$options": "i"} },
                     { employee_id: { "$regex": search, "$options": "i"} },
