@@ -10,7 +10,7 @@ var ObjectId = require('mongodb').ObjectID;
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, '../admin/public/uploads/users')
+        cb(null, '../uploads/users')
     },
     filename: function (req, file, cb) {
         // You could rename the file name
@@ -399,13 +399,23 @@ exports.getUsers = (req, res) => {
     var perPage = req.body.perPage ? req.body.perPage : 10,
     page = req.body.page-1
     var search = req.body.search
+    var ref = req.body.ref
     const usersData = []
 
     var cby = ''; 
+    var role = ''; 
     if(req.body.role == 1){
         cby = {$ne: ""};
     }else{
         cby = req.body.user_id;
+    }
+
+    if(ref == 'teamleads'){
+        role = 4
+    }else if(ref == 'ams'){
+        role = 3
+    }else{
+        role = {$ne:1}
     }
 
     users.aggregate([
@@ -413,7 +423,7 @@ exports.getUsers = (req, res) => {
         { "$limit": perPage * req.body.page },
         { "$skip": perPage * page },
         {$match: 
-            {role:{$ne:1},created_by: cby,
+            {role:role,created_by: cby,
                 $or: 
                 [ 
                     { admin_name: { "$regex": search, "$options": "i"} }, 
@@ -453,7 +463,7 @@ exports.getUsers = (req, res) => {
                 });
             }
 
-            users.find({role:{$ne:1},created_by: cby, $or: 
+            users.find({role:role,created_by: cby, $or: 
                 [ 
                     { admin_name: { "$regex": search, "$options": "i"} }, 
                     { email: { "$regex": search, "$options": "i"} }, 

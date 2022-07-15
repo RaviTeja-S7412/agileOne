@@ -25,16 +25,20 @@ const Employees = () => {
   const get_employees = useSelector((state) => state.employees)
   const get_allteamleads = useSelector((state) => state.admin)
   const [hideColumn, setHidecolumn] = useState(false)
+  const [hideActionColumn, setHideActioncolumn] = useState(false)
   const dispatch = useDispatch()
   const location = useNavigate()
   const login_user = localStorage.getItem('user') && JSON.parse(localStorage.getItem('user'))
 
   useEffect(() => {
-    if (login_user.role === 3 && get_allteamleads.get_team_leads) {
+    if (login_user && login_user.role === 3 && get_allteamleads.get_team_leads) {
       dispatch(get_teamleads())
     }
-    if (login_user.role === 4) {
+    if (login_user && login_user.role === 4) {
       setHidecolumn(true)
+    }
+    if(login_user && login_user.role === 1){
+      setHideActioncolumn(true)
     }
   }, [get_allteamleads.get_team_leads])
 
@@ -79,7 +83,8 @@ const Employees = () => {
             <CIcon icon={cilPenAlt} customClassName="nav-icon favicon" onClick={() => handleEdit(row.id)} />
             <CIcon icon={cilTrash} customClassName="nav-icon favicon" onClick={() => handleDelete(row.id)} />
           </>
-        )
+        ),
+        omit: hideActionColumn
       },
       {
         name: 'Employee ID',

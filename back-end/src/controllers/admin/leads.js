@@ -189,7 +189,7 @@ exports.get_leads = (req, res) => {
     }else{
        column_name = "created_by";
     }
-
+    
     var filterStatus = "";
     if(status == "offers"){
         filterStatus = 2;
@@ -200,12 +200,11 @@ exports.get_leads = (req, res) => {
     }
 
     var query = {};
-    if(role !== 1)
+    if(role !== 1 && role !== 2)
         query[column_name] = req.body.user_id;
 
     query["deleted"] = 0;
     query["status"] = filterStatus;
-
     leads.aggregate([
         { "$sort": { '_id' : -1 } },
         { "$limit": perPage * req.body.page },

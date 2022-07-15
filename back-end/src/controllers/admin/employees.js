@@ -134,7 +134,9 @@ exports.get_employees = (req, res) => {
     var team_leads = req.body.team_leads;
 
     var query = {};
-    if(role == 3){
+    if(role == 1){
+        
+    }else if(role == 3){
         query["team_lead"] = { $in : team_leads };
     }else{
         query["team_lead"] = req.body.team_lead_id;

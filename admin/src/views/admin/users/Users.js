@@ -8,7 +8,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { deleteUser, getUsers } from 'src/actions/auth.actions'
 import CIcon from '@coreui/icons-react'
 import { cilPenAlt, cilTrash } from '@coreui/icons'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import swal from 'sweetalert'
 import {SearchInput,CustomLoader,customStyles} from 'src/components/datatables/index'
 import Pagination from 'src/components/datatables/Pagination'
@@ -23,8 +23,11 @@ const Users = () => {
   const [currentPage, setCurrentPage] = useState(1)
   const user_data = useSelector((state) => state.auth)
   const admin = useSelector((state) => state.admin)
+  const [searchParams, setSearchParams] = useSearchParams()
+
   const dispatch = useDispatch()
   const location = useNavigate()
+  const ref = searchParams.get('ref')
   const login_user = JSON.parse(localStorage.getItem('user'))
 
   const handleDelete = (id) => {
@@ -122,7 +125,8 @@ const Users = () => {
       perPage: size,
       search: search,
       role: login_user && login_user.role,
-      user_id: login_user && login_user._id
+      user_id: login_user && login_user._id,
+      ref: ref
     }
     dispatch(getUsers(post_data))
     setLoading(false)

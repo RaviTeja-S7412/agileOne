@@ -340,7 +340,7 @@ const Leads = () => {
                 ) : '' }
                 </CCol>
                 <CCol xs={8}>
-                  { login_user.role === 3 || login_user.role === 4 ? (
+                  { login_user && login_user.role === 3 || login_user && login_user.role === 4 ? (
                   <CButton color="primary" onClick={handleCreate} size="sm" className="float-end">
                     Create
                   </CButton>

@@ -92,19 +92,6 @@ export const get_dashboard_data = () => {
       type: authConstants.GET_DASHBOARDDATA_REQUEST,
     })
 
-    if (udata.role == 3) {
-      dispatch(get_teamleads())
-      const admin = useSelector((state) => state.admin)
-      let all_teamleads = admin && admin.team_leads
-      const team_leads_data = []
-      if (all_teamleads && all_teamleads.length > 0) {
-        all_teamleads.forEach((element) => {
-          team_leads_data.push(element._id)
-        })
-      }
-      console.log(team_leads_data)
-    }
-
     const res = await axios.post(`/admin/get_dashboarddata`, {
       user_id: udata._id,
       role: udata.role,

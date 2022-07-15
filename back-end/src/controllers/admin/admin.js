@@ -74,7 +74,7 @@ exports.get_userdata = (req, res) => {
 
 exports.get_roles = (req, res) => {
 
-    roles.find({id:{$ne:1}})
+    roles.find({id:{$nin:[1,5]}})
         .toArray((error, result) => {
 
             if (error) {
@@ -150,21 +150,42 @@ exports.get_dashboarddata = (req, res) => {
     var tlquery = {};
     var activequery = {};
     var exitquery = {};
-    if(role == 4){
+    var offerquery = {};
+    if(role == 5){
+        // empquery["team_lead"] = user_id;
+        offerquery["status"] = { "$exists": true, "$in": [2] };
+        offerquery["employee_id"] = user_id;
+        activequery["status"] = { "$exists": true, "$in": [1] };
+        activequery["employee_id"] = user_id;
+        exitquery["status"] = { "$exists": true, "$in": [0] };
+        exitquery["employee_id"] = user_id;
+    }else if(role == 4){
         empquery["team_lead"] = user_id;
+        offerquery["status"] = { "$exists": true, "$in": [2] };
+        offerquery["team_lead"] = user_id;
         activequery["status"] = { "$exists": true, "$in": [1] };
         activequery["team_lead"] = user_id;
         exitquery["status"] = { "$exists": true, "$in": [0] };
         exitquery["team_lead"] = user_id;
     }else if(role == 3){
         // empquery["team_lead"] = user_id;
+        offerquery["status"] = { "$exists": true, "$in": [2] };
+        offerquery["accounts_manager"] = user_id;
         activequery["status"] = { "$exists": true, "$in": [1] };
         activequery["accounts_manager"] = user_id;
         exitquery["status"] = { "$exists": true, "$in": [0] };
         exitquery["accounts_manager"] = user_id;
         tlquery["role"] = { "$exists": true, "$in": [4] }
         tlquery["created_by"] = user_id
+    }else if(role == 2){
+        // empquery["team_lead"] = user_id;
+        offerquery["status"] = { "$exists": true, "$in": [2] };
+        activequery["status"] = { "$exists": true, "$in": [1] };
+        exitquery["status"] = { "$exists": true, "$in": [0] };
     }else if(role == 1){
+        offerquery["status"] = { "$exists": true, "$in": [2] };
+        activequery["status"] = { "$exists": true, "$in": [1] };
+        exitquery["status"] = { "$exists": true, "$in": [0] };
         tlquery["role"] = { "$exists": true, "$in": [4] }
     }
     
@@ -195,6 +216,10 @@ exports.get_dashboarddata = (req, res) => {
 
                 leads.aggregate([
                     { "$facet": {
+                      "OCount": [
+                        { "$match" : offerquery},
+                        { "$count": "OCount" },
+                      ],
                       "ACount": [
                         { "$match" : activequery},
                         { "$count": "ACount" },
@@ -205,12 +230,14 @@ exports.get_dashboarddata = (req, res) => {
                       ]
                     }},
                     { "$project": {
+                      "OCount": { "$arrayElemAt": ["$OCount.OCount", 0] },
                       "ACount": { "$arrayElemAt": ["$ACount.ACount", 0] },
                       "ECount": { "$arrayElemAt": ["$ECount.ECount", 0] }
                     }}
                   ]).toArray(function(err,lcount){
 
                     result[0]["employees_count"] = count;
+                    result[0]["offer_leads_count"] = lcount[0]["OCount"];
                     result[0]["active_leads_count"] = lcount[0]["ACount"];
                     result[0]["exit_leads_count"] = lcount[0]["ECount"];
 
