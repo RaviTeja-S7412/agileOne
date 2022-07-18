@@ -2,10 +2,14 @@ const express = require('express');
 const env = require('dotenv');
 const bodyParser = require('body-parser');
 const cors = require("cors");
+const swaggerUi = require('swagger-ui-express'),
+swaggerDocument = require('../swagger.json');
 
 const app = express();
 env.config();
 // app.use(bodyParser());
+
+
 
 app.use(express.json());
 app.use(express.urlencoded({
@@ -13,6 +17,11 @@ extended: true
 }));
 const mongo = require('./connection.js');
 
+app.use(
+  '/api-docs',
+  swaggerUi.serve, 
+  swaggerUi.setup(swaggerDocument)
+);
 mongo.connectToServer( function( err) {
     if (err) console.log(err);
       app.use(cors());

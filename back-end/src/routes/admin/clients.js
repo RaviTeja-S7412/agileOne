@@ -8,6 +8,6 @@ router.get('/admin/get_allclients',requireSignin,get_allclients);
 router.post('/admin/create_client',requireSignin,create_client);
 router.post('/admin/update_client',requireSignin,update_client);
 router.post('/admin/get_singleclient',requireSignin,get_singleclient);
-router.post('/admin/delete_client',requireSignin,deleteClient);
+router.delete('/admin/delete_client',requireSignin,deleteClient);
 
 module.exports = router;

@@ -71,7 +71,7 @@ export const updateUser = (udata) => {
 export const deleteUser = (udata) => {
   return async (dispatch) => {
     dispatch({ type: authConstants.DELETE_USER_REQUEST })
-    const res = await axios.post(`/admin/deleteUser`, udata)
+    const res = await axios.delete(`/admin/deleteUser`, { data: udata })
 
     if (res.status === 200) {
       dispatch({

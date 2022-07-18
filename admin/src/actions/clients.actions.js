@@ -42,7 +42,7 @@ export const updateClient = (udata) => {
 export const deleteClient = (udata) => {
   return async (dispatch) => {
     dispatch({ type: clientConstants.DELETE_CLIENT_REQUEST })
-    const res = await axios.post(`/admin/delete_client`, udata)
+    const res = await axios.delete(`/admin/delete_client`, { data: udata })
 
     if (res.status === 200) {
       dispatch({

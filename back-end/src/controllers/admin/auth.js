@@ -10,7 +10,8 @@ var ObjectId = require('mongodb').ObjectID;
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, '../uploads/users')
+//        cb(null, '../uploads/users')  // live path
+        cb(null, '../admin/public/uploads/users')  // local path   
     },
     filename: function (req, file, cb) {
         // You could rename the file name

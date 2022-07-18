@@ -1,0 +1,822 @@
+{
+    "swagger": "3.0",
+    "openapi": "3.0.0",
+    "info": {
+        "version": "1.0.0",
+        "title": "AgileOne CRUD",
+        "description": "Recruiting Application",
+        "license": {
+            "name": "MIT",
+            "url": "https://opensource.org/licenses/MIT"
+        }
+    },
+    "servers": [
+        {
+            "url": "http://localhost:2000/api/",
+            "description": "Dev"
+        }
+    ],
+    "components": {        
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
+            }
+        }
+    },
+    "schemes": ["http","https"],
+    "consumes": ["application/json"],
+    "produces": ["application/json"],
+    "paths": {
+        "/admin/signin": {
+            "post": {
+                "tags": ["Login"],
+                "description": "Login",
+                "operationId": "signin",
+                "parameters": [],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#"
+                            },
+                            "example": {
+                                "loginref": "admin",
+                                "email": "vms@gmail.com",
+                                "password": "Vms@123"    
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "tags": ["Admin","Clients","Employees"],
+        "/admin/get_roles": {
+            "get": {
+                "security": [
+                    {
+                    "bearerAuth": []
+                    }
+                ],
+                "tags": ["Admin"],
+                "summary": "Get all roles in system",
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/admin/get_userdata": {
+            "post": {
+                "tags": ["Admin"],
+                "description": "Get Userdata",
+                "operationId": "get_userdata",
+                "summary": "Get User Details in system",
+                "security": [
+                    {
+                    "bearerAuth": []
+                    }
+                ],
+                "parameters": [],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#"
+                            },
+                            "example": {
+                                "loginType": "admin/employee",
+                                "user_id": "User ID"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/admin/get_teamleads": {
+            "post": {
+                "tags": ["Admin"],
+                "description": "Get All Team Leads",
+                "operationId": "get_teamleads",
+                "summary": "Get All Teamleads in system",
+                "security": [
+                    {
+                    "bearerAuth": []
+                    }
+                ],
+                "parameters": [],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#"
+                            },
+                            "example": {
+                                "user_id": "User ID"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/admin/get_tlemployees": {
+            "post": {
+                "tags": ["Admin"],
+                "description": "Get All Employees Under Team Leads",
+                "operationId": "get_tlemployees",
+                "summary": "Get All Employees Under Teamleads in system",
+                "security": [
+                    {
+                    "bearerAuth": []
+                    }
+                ],
+                "parameters": [],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#"
+                            },
+                            "example": {
+                                "user_id": "Team Lead ID"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/admin/get_singleuser": {
+            "post": {
+                "tags": ["Admin"],
+                "description": "Get Single User",
+                "operationId": "get_singleuser",
+                "summary": "Get Single User Details in system",
+                "security": [
+                    {
+                    "bearerAuth": []
+                    }
+                ],
+                "parameters": [],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#"
+                            },
+                            "example": {
+                                "loginType": "admin/employee",
+                                "user_id": "User ID"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/admin/get_dashboarddata": {
+            "post": {
+                "tags": ["Admin"],
+                "description": "Get Dashboard Data",
+                "operationId": "get_dashboarddata",
+                "summary": "Get Dashboard Data for all roles in system",
+                "security": [
+                    {
+                    "bearerAuth": []
+                    }
+                ],
+                "parameters": [],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#"
+                            },
+                            "example": {
+                                "role": "Role ID from get_roles api",
+                                "user_id": "User ID"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/admin/get_users": {
+            "post": {
+                "tags": ["Admin"],
+                "description": "Get All Users",
+                "operationId": "get_users",
+                "summary": "Get All Users Details in system",
+                "security": [
+                    {
+                    "bearerAuth": []
+                    }
+                ],
+                "parameters": [],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#"
+                            },
+                            "example": {
+                                "perPage": "10/20/30",
+                                "page": "Page Number",
+                                "ref": "teamleads/ams/:empty",
+                                "role": "Role ID from get_roles api",
+                                "user_id": "User ID",
+                                "search": "Search Text"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/admin/updatePassword": {
+            "post": {
+                "tags": ["Admin"],
+                "description": "Update Password",
+                "operationId": "updatePassword",
+                "summary": "Update Password Details in system",
+                "security": [
+                    {
+                    "bearerAuth": []
+                    }
+                ],
+                "parameters": [],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#"
+                            },
+                            "example": {
+                                "new_password": "New Password",
+                                "confirm_password": "Confirm New Password",
+                                "user_id": "User ID"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/admin/updateProfile": {
+            "post": {
+                "tags": ["Admin"],
+                "description": "Update User Profile",
+                "operationId": "updateProfile",
+                "summary": "Update User Profile Details in system",
+                "consumes": "multipart/form-data",
+                "security": [
+                    {
+                    "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "role": { "type": "integer" },
+                                    "file": { "type": "string", "format": "binary" },
+                                    "admin_name": { "type": "string" },
+                                    "email": { "type": "string" },
+                                    "mobile": { "type": "string" },
+                                    "designation": { "type": "string" },
+                                    "old_picture": { "type": "string" },
+                                    "user_id": { "type": "string" }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/admin/deleteUser": {
+            "delete": {
+                "tags": ["Admin"],
+                "description": "Delete User",
+                "operationId": "deleteUser",
+                "summary": "Delete User Details from system",
+                "security": [
+                    {
+                    "bearerAuth": []
+                    }
+                ],
+                "parameters": [],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#"
+                            },
+                            "example": {
+                                "user_id": "User ID"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/admin/updateUser": {
+            "post": {
+                "tags": ["Admin"],
+                "description": "Update User Details",
+                "operationId": "updateUser",
+                "summary": "Update User Details in system",
+                "consumes": "application/json",
+                "security": [
+                    {
+                    "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#"
+                            },
+                            "example": {
+                                "role": "Role ID from get_roles api",
+                                "admin_name": "User Name",
+                                "email": "User Email",
+                                "mobile": "User Mobile",
+                                "designation": "User Designation",
+                                "user_id": "User ID",
+                                "updated_by": "Updated User ID"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/admin/get_clients": {
+            "post": {
+                "tags": ["Clients"],
+                "description": "Get Clients",
+                "operationId": "get_clients",
+                "summary": "Get Clients Details in system",
+                "consumes": "application/json",
+                "security": [
+                    {
+                    "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#"
+                            },
+                            "example": {
+                                "perPage": "10/20/30",
+                                "page": "Page Number",
+                                "search": "Search Text"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/admin/get_allclients": {
+            "get": {
+                "tags": ["Clients"],
+                "description": "Get All Clients",
+                "operationId": "get_allclients",
+                "summary": "Get All Clients Details in system",
+                "security": [
+                    {
+                    "bearerAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/admin/create_client": {
+            "post": {
+                "tags": ["Clients"],
+                "description": "Add Client Details",
+                "operationId": "create_client",
+                "summary": "Add Client Details in system",
+                "consumes": "application/json",
+                "security": [
+                    {
+                    "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#"
+                            },
+                            "example": {
+                                "client_name": "Client Name"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/admin/update_client": {
+            "post": {
+                "tags": ["Clients"],
+                "description": "Update Client Details",
+                "operationId": "update_client",
+                "summary": "Update Client Details in system",
+                "consumes": "application/json",
+                "security": [
+                    {
+                    "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#"
+                            },
+                            "example": {
+                                "client_name": "Client Name",
+                                "id": "Client ID"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/admin/get_singleclient": {
+            "post": {
+                "tags": ["Clients"],
+                "description": "Get Single Client Details",
+                "operationId": "get_singleclient",
+                "summary": "Get Single Client Details in system",
+                "consumes": "application/json",
+                "security": [
+                    {
+                    "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#"
+                            },
+                            "example": {
+                                "user_id": "Client ID"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/admin/delete_client": {
+            "delete": {
+                "tags": ["Clients"],
+                "description": "Delete Client",
+                "operationId": "delete_client",
+                "summary": "Delete Client Details from system",
+                "security": [
+                    {
+                    "bearerAuth": []
+                    }
+                ],
+                "parameters": [],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#"
+                            },
+                            "example": {
+                                "user_id": "User ID"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/admin/get_employees": {
+            "post": {
+                "tags": ["Employees"],
+                "description": "Get Employees",
+                "operationId": "get_employees",
+                "summary": "Get Employees Details in system",
+                "consumes": "application/json",
+                "security": [
+                    {
+                    "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#"
+                            },
+                            "example": {
+                                "perPage": "10/20/30",
+                                "page": "Page Number",
+                                "search": "Search Text",
+                                "role": "Role ID from get_roles api",
+                                "team_leads": "Pass Teams Lead Ids as an array when user login as Accounts Manager",
+                                "team_lead_id": "Team Lead ID"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/admin/get_allemployees": {
+            "post": {
+                "tags": ["Employees"],
+                "description": "Get All Employees",
+                "operationId": "get_allemployees",
+                "summary": "Get All Employees Details in system",
+                "security": [
+                    {
+                    "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#"
+                            },
+                            "example": {
+                                "team_lead_id": "Team Lead ID"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/admin/create_employee": {
+            "post": {
+                "tags": ["Employees"],
+                "description": "Add Employee Details",
+                "operationId": "create_employee",
+                "summary": "Add Employee Details in system",
+                "consumes": "application/json",
+                "security": [
+                    {
+                    "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#"
+                            },
+                            "example": {
+                                "employee_name": "Employee Name",
+                                "employee_id": "Employee ID",
+                                "mobile_number": "Mobile Number",
+                                "password": "Employee Password",
+                                "email": "Employee Email",
+                                "office_email": "Employee Office Email",
+                                "address": "Employee Address",
+                                "designation": "Employee Designation",
+                                "team_lead_id": "Team Lead ID"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/admin/update_employee": {
+            "post": {
+                "tags": ["Employees"],
+                "description": "Update Employee Details",
+                "operationId": "update_employee",
+                "summary": "Update Employee Details in system",
+                "consumes": "application/json",
+                "security": [
+                    {
+                    "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#"
+                            },
+                            "example": {
+                                "employee_name": "Employee Name",
+                                "employee_id": "Employee ID",
+                                "mobile_number": "Mobile Number",
+                                "email": "Employee Email",
+                                "office_email": "Employee Office Email",
+                                "address": "Employee Address",
+                                "designation": "Employee Designation",
+                                "id": "Employee ID"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/admin/get_singleemployee": {
+            "post": {
+                "tags": ["Employees"],
+                "description": "Get Single Employee Details",
+                "operationId": "get_singleemployee",
+                "summary": "Get Single Employee Details in system",
+                "consumes": "application/json",
+                "security": [
+                    {
+                    "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#"
+                            },
+                            "example": {
+                                "user_id": "Employee ID"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/admin/delete_employee": {
+            "delete": {
+                "tags": ["Employees"],
+                "description": "Delete Employee",
+                "operationId": "delete_employee",
+                "summary": "Delete Employee Details from system",
+                "security": [
+                    {
+                    "bearerAuth": []
+                    }
+                ],
+                "parameters": [],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#"
+                            },
+                            "example": {
+                                "user_id": "User ID"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "auths": {
+            "type": "object",
+            "required": [
+            "email", "password", "loginref"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "loginref": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+    
+}
