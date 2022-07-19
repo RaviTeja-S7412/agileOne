@@ -204,7 +204,8 @@ exports.get_leads = (req, res) => {
         query[column_name] = req.body.user_id;
 
     query["deleted"] = 0;
-    query["status"] = filterStatus;
+    if(status !== "consultants")
+        query["status"] = filterStatus;
     leads.aggregate([
         { "$sort": { '_id' : -1 } },
         {$match: 

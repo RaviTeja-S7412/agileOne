@@ -338,6 +338,9 @@ const Leads = () => {
                 { uri === "exit" ? (
                     <strong>All Exit Consultants</strong>
                 ) : '' }
+                { uri === "consultants" ? (
+                    <strong>All Consultants</strong>
+                ) : '' }
                 </CCol>
                 <CCol xs={8}>
                   { login_user && login_user.role === 3 || login_user && login_user.role === 4 ? (

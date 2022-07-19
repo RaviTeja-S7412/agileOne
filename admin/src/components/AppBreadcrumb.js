@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useLocation } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 
 // import routes from '../routes'
@@ -66,24 +66,20 @@ const AppBreadcrumb = () => {
 
   return (
     <CBreadcrumb className="m-0 ms-2">
-      <CBreadcrumbItem href={admin.get_data.uploads_folder + 'admin/dashboard'}>
-        Home
-      </CBreadcrumbItem>
+      <li className="breadcrumb-item">
+        <Link to={admin.get_data.uploads_folder + 'admin/dashboard'}>Home</Link>
+      </li>
       {breadcrumbs.map((breadcrumb, index) => {
         return (
-          <CBreadcrumbItem
-            {...(breadcrumb.active
-              ? { active: true }
-              : {
-                  href:
-                    breadcrumb.pathname === '/admin/consultants'
-                      ? `/admin/consultants/${breadcrumb.prevPage}`
-                      : breadcrumb.pathname,
-                })}
-            key={index}
-          >
-            {breadcrumb.name}
-          </CBreadcrumbItem>
+          <li className={`${breadcrumb.active ? 'active' : ''} breadcrumb-item`} key={'bi' + index}>
+            {breadcrumb.active ? (
+              breadcrumb.name
+            ) : (
+              <Link to={breadcrumb.pathname} key={index}>
+                {breadcrumb.name}
+              </Link>
+            )}
+          </li>
         )
       })}
     </CBreadcrumb>
