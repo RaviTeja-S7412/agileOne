@@ -8,6 +8,6 @@ router.post('/admin/get_employees',requireSignin,get_employees);
 router.post('/admin/create_employee',requireSignin,create_employee);
 router.post('/admin/update_employee',requireSignin,update_employee);
 router.post('/admin/get_singleemployee',requireSignin,get_singleemployee);
-router.post('/admin/delete_employee',requireSignin,deleteEmployee);
+router.delete('/admin/delete_employee',requireSignin,deleteEmployee);
 
 module.exports = router;

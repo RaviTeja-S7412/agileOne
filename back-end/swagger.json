@@ -57,7 +57,7 @@
                 }
             }
         },
-        "tags": ["Admin","Clients","Employees"],
+        "tags": ["Admin","Clients","Recruiters","Consultants"],
         "/admin/get_roles": {
             "get": {
                 "security": [
@@ -594,10 +594,10 @@
         },
         "/admin/get_employees": {
             "post": {
-                "tags": ["Employees"],
-                "description": "Get Employees",
+                "tags": ["Recruiters"],
+                "description": "Get Recruiters",
                 "operationId": "get_employees",
-                "summary": "Get Employees Details in system",
+                "summary": "Get Recruiters Details in system",
                 "consumes": "application/json",
                 "security": [
                     {
@@ -630,10 +630,10 @@
         },
         "/admin/get_allemployees": {
             "post": {
-                "tags": ["Employees"],
-                "description": "Get All Employees",
+                "tags": ["Recruiters"],
+                "description": "Get All Recruiters",
                 "operationId": "get_allemployees",
-                "summary": "Get All Employees Details in system",
+                "summary": "Get All Recruiters Details in system",
                 "security": [
                     {
                     "bearerAuth": []
@@ -660,10 +660,10 @@
         },
         "/admin/create_employee": {
             "post": {
-                "tags": ["Employees"],
-                "description": "Add Employee Details",
+                "tags": ["Recruiters"],
+                "description": "Add Recruiter Details",
                 "operationId": "create_employee",
-                "summary": "Add Employee Details in system",
+                "summary": "Add Recruiter Details in system",
                 "consumes": "application/json",
                 "security": [
                     {
@@ -677,14 +677,14 @@
                                 "$ref": "#"
                             },
                             "example": {
-                                "employee_name": "Employee Name",
-                                "employee_id": "Employee ID",
+                                "employee_name": "Recruiter Name",
+                                "employee_id": "Recruiter ID",
                                 "mobile_number": "Mobile Number",
-                                "password": "Employee Password",
-                                "email": "Employee Email",
-                                "office_email": "Employee Office Email",
-                                "address": "Employee Address",
-                                "designation": "Employee Designation",
+                                "password": "Recruiter Password",
+                                "email": "Recruiter Email",
+                                "office_email": "Recruiter Office Email",
+                                "address": "Recruiter Address",
+                                "designation": "Recruiter Designation",
                                 "team_lead_id": "Team Lead ID"
                             }
                         }
@@ -699,10 +699,10 @@
         },
         "/admin/update_employee": {
             "post": {
-                "tags": ["Employees"],
-                "description": "Update Employee Details",
+                "tags": ["Recruiters"],
+                "description": "Update Recruiter Details",
                 "operationId": "update_employee",
-                "summary": "Update Employee Details in system",
+                "summary": "Update Recruiter Details in system",
                 "consumes": "application/json",
                 "security": [
                     {
@@ -716,14 +716,14 @@
                                 "$ref": "#"
                             },
                             "example": {
-                                "employee_name": "Employee Name",
-                                "employee_id": "Employee ID",
+                                "employee_name": "Recruiter Name",
+                                "employee_id": "Recruiter ID",
                                 "mobile_number": "Mobile Number",
-                                "email": "Employee Email",
-                                "office_email": "Employee Office Email",
-                                "address": "Employee Address",
-                                "designation": "Employee Designation",
-                                "id": "Employee ID"
+                                "email": "Recruiter Email",
+                                "office_email": "Recruiter Office Email",
+                                "address": "Recruiter Address",
+                                "designation": "Recruiter Designation",
+                                "id": "Recruiter ID"
                             }
                         }
                     }
@@ -737,10 +737,10 @@
         },
         "/admin/get_singleemployee": {
             "post": {
-                "tags": ["Employees"],
-                "description": "Get Single Employee Details",
+                "tags": ["Recruiters"],
+                "description": "Get Single Recruiter Details",
                 "operationId": "get_singleemployee",
-                "summary": "Get Single Employee Details in system",
+                "summary": "Get Single Recruiter Details in system",
                 "consumes": "application/json",
                 "security": [
                     {
@@ -754,7 +754,7 @@
                                 "$ref": "#"
                             },
                             "example": {
-                                "user_id": "Employee ID"
+                                "user_id": "Recruiter ID"
                             }
                         }
                     }
@@ -768,10 +768,10 @@
         },
         "/admin/delete_employee": {
             "delete": {
-                "tags": ["Employees"],
-                "description": "Delete Employee",
+                "tags": ["Recruiters"],
+                "description": "Delete Recruiter",
                 "operationId": "delete_employee",
-                "summary": "Delete Employee Details from system",
+                "summary": "Delete Recruiter Details from system",
                 "security": [
                     {
                     "bearerAuth": []
@@ -785,7 +785,233 @@
                                 "$ref": "#"
                             },
                             "example": {
-                                "user_id": "User ID"
+                                "user_id": "Recruiter ID"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/admin/get_leads": {
+            "post": {
+                "tags": ["Consultants"],
+                "description": "Get Offers",
+                "operationId": "get_leads",
+                "summary": "Get Offers Details in system",
+                "consumes": "application/json",
+                "security": [
+                    {
+                    "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#"
+                            },
+                            "example": {
+                                "perPage": "10/20/30",
+                                "page": "Page Number",
+                                "search": "Search Text",
+                                "role": "Role ID from get_roles api",
+                                "user_id": "User ID",
+                                "status": "offers/active/exit"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/admin/create_lead": {
+            "post": {
+                "tags": ["Consultants"],
+                "description": "Create Offer Details",
+                "operationId": "create_lead",
+                "summary": "Create Offer Details in system",
+                "consumes": "application/json",
+                "security": [
+                    {
+                    "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#"
+                            },
+                            "example": {
+                                "candidate_name": "Candidate Name",
+                                "direct_client": "Client ID from get_clients api",
+                                "end_client": "Client ID from get_clients api",
+                                "contact_number": "Candidate Contact Number",
+                                "job_id": "Job ID",
+                                "job_title": "Job Title",
+                                "visa_status": "1-Yes/0-No",
+                                "job_duration": "Job Duration",
+                                "bill_rate": "Bill Rate",
+                                "pay_rate": "Pay Rate",
+                                "margin": "Margin Rate",
+                                "tentative_start_date": "Tentative Start Date",
+                                "employee_id": "Employee ID",
+                                "team_lead": "Team Lead ID",
+                                "accounts_manager": "Accounts Manager ID",
+                                "user_id": "Logged In User ID"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/admin/update_lead": {
+            "post": {
+                "tags": ["Consultants"],
+                "description": "Update Offer Details",
+                "operationId": "update_lead",
+                "summary": "Update Offer Details in system",
+                "consumes": "application/json",
+                "security": [
+                    {
+                    "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#"
+                            },
+                            "example": {
+                                "candidate_name": "Candidate Name",
+                                "direct_client": "Client ID from get_clients api",
+                                "end_client": "Client ID from get_clients api",
+                                "contact_number": "Candidate Contact Number",
+                                "job_id": "Job ID",
+                                "job_title": "Job Title",
+                                "visa_status": "1-Yes/0-No",
+                                "job_duration": "Job Duration",
+                                "bill_rate": "Bill Rate",
+                                "pay_rate": "Pay Rate",
+                                "margin": "Margin Rate",
+                                "tentative_start_date": "Tentative Start Date",
+                                "employee_id": "Employee ID",
+                                "team_lead": "Team Lead ID",
+                                "accounts_manager": "Accounts Manager ID",
+                                "user_id": "Logged In User ID",
+                                "id": "Offer ID"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/admin/get_singlelead": {
+            "post": {
+                "tags": ["Consultants"],
+                "description": "Get Single Offer Details",
+                "operationId": "get_singlelead",
+                "summary": "Get Single Offer Details in system",
+                "consumes": "application/json",
+                "security": [
+                    {
+                    "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#"
+                            },
+                            "example": {
+                                "id": "Offer ID"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/admin/deleteLead": {
+            "delete": {
+                "tags": ["Consultants"],
+                "description": "Delete Offer",
+                "operationId": "deleteLead",
+                "summary": "Delete Offer Details from system",
+                "security": [
+                    {
+                    "bearerAuth": []
+                    }
+                ],
+                "parameters": [],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#"
+                            },
+                            "example": {
+                                "user_id": "Offer ID"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/admin/update_startdate": {
+            "post": {
+                "tags": ["Consultants"],
+                "description": "Update Exit Status / Update Start Date",
+                "operationId": "update_startdate",
+                "summary": "Update Exit Status / Update Start Date Details from system",
+                "security": [
+                    {
+                    "bearerAuth": []
+                    }
+                ],
+                "parameters": [],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#"
+                            },
+                            "example": {
+                                "ref": "exit/:empty",
+                                "offer_id": "Offer ID",
+                                "start_date": "YYYY-MM-DD/:empty"
                             }
                         }
                     },

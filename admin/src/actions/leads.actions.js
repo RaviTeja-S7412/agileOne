@@ -61,7 +61,7 @@ export const updateStartdate = (udata) => {
 export const deleteLead = (udata) => {
   return async (dispatch) => {
     dispatch({ type: leadConstants.DELETE_LEAD_REQUEST })
-    const res = await axios.post(`/admin/deleteLead`, udata)
+    const res = await axios.delete(`/admin/deleteLead`, { data: udata })
 
     if (res.status === 200) {
       dispatch({

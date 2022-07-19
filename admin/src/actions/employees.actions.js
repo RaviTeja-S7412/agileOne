@@ -42,7 +42,7 @@ export const updateEmployee = (udata) => {
 export const deleteEmployee = (udata) => {
   return async (dispatch) => {
     dispatch({ type: employeeConstants.DELETE_EMPLOYEE_REQUEST })
-    const res = await axios.post(`/admin/delete_employee`, udata)
+    const res = await axios.delete(`/admin/delete_employee`, { data: udata })
 
     if (res.status === 200) {
       dispatch({

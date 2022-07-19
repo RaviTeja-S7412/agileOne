@@ -98,8 +98,6 @@ exports.get_clients = (req, res) => {
 
     clients.aggregate([
         { "$sort": { '_id' : -1 } },
-        { "$limit": perPage * req.body.page },
-        { "$skip": perPage * page },
         {$match: 
             {"status":1,"deleted":0,
                 $or: 
@@ -108,6 +106,8 @@ exports.get_clients = (req, res) => {
                 ] 
             },
         },
+        { "$limit": perPage * req.body.page },
+        { "$skip": perPage * page },
     ])
     .toArray(function (err, db_data) {
 

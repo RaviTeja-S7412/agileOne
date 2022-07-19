@@ -207,8 +207,6 @@ exports.get_leads = (req, res) => {
     query["status"] = filterStatus;
     leads.aggregate([
         { "$sort": { '_id' : -1 } },
-        { "$limit": perPage * req.body.page },
-        { "$skip": perPage * page },
         {$match: 
             {
                 $and: [query],
@@ -277,6 +275,8 @@ exports.get_leads = (req, res) => {
             foreignField: "_id",
             as: "end_client_data"                                                                  
         }},
+        { "$limit": perPage * req.body.page },
+        { "$skip": perPage * page },
     ])
     .toArray(function (err, db_data) {
 
@@ -380,7 +380,6 @@ exports.get_singlelead = (req, res) => {
 
 exports.update_startdate = (req, res) => {
     
-    console.log(req.body)
     if(!req.body.offer_id){
         return res.status(202).json({ message: "ID is Required." });
     }

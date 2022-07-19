@@ -7,7 +7,7 @@ router.post('/admin/get_leads',requireSignin,get_leads);
 router.post('/admin/create_lead',requireSignin,create_lead);
 router.post('/admin/update_lead',requireSignin,update_lead);
 router.post('/admin/get_singlelead',requireSignin,get_singlelead);
-router.post('/admin/deleteLead',requireSignin,deleteLead);
+router.delete('/admin/deleteLead',requireSignin,deleteLead);
 router.post('/admin/update_startdate',requireSignin,update_startdate);
 
 module.exports = router;

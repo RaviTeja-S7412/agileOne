@@ -146,8 +146,6 @@ exports.get_employees = (req, res) => {
 
     employees.aggregate([
         { "$sort": { '_id' : -1 } },
-        { "$limit": perPage * req.body.page },
-        { "$skip": perPage * page },
         {$match: 
             {
                 $and: [query],
@@ -174,6 +172,8 @@ exports.get_employees = (req, res) => {
             foreignField: "_id",
             as: "team_data"                                                                  
         }},
+        { "$limit": perPage * req.body.page },
+        { "$skip": perPage * page },
     ])
     .toArray(function (err, db_data) {
 

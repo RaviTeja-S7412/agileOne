@@ -421,8 +421,6 @@ exports.getUsers = (req, res) => {
 
     users.aggregate([
         { "$sort": { '_id' : -1 } },
-        { "$limit": perPage * req.body.page },
-        { "$skip": perPage * page },
         {$match: 
             {role:role,created_by: cby,
                 $or: 
@@ -441,6 +439,8 @@ exports.getUsers = (req, res) => {
                 as: "role_data"                                                                  
             }
         },
+        { "$limit": perPage * req.body.page },
+        { "$skip": perPage * page },
     ])
     .toArray(function (err, users_data) {
 
