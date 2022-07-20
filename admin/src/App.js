@@ -47,11 +47,12 @@ export default function App() {
         dispatch(get_dashboard_data())
       }
     }
+    dispatch({ type: authConstants.GET_DASHBOARDDATA_REQUEST })
     dispatch({ type: employeeConstants.GET_EMPLOYEES_REQUEST })
     dispatch({ type: leadConstants.GET_LEADS_REQUEST })
     dispatch({ type: authConstants.GET_USERS_REQUEST })
     dispatch({ type: clientConstants.GET_CLIENTS_REQUEST })
-  }, [auth.authenticate, dispatch, history, token, urls.get_routes, admin.get_dashboard_data])
+  }, [auth.authenticate, dispatch, history, token, urls.get_routes])
   return (
     <Suspense fallback={loading}>
       <Routes>

@@ -171,6 +171,45 @@ exports.update_lead = (req, res) => {
 
 exports.get_leads = (req, res) => {
 
+
+   /*  leads.find({}).toArray(function (err, db_data){
+
+        db_data.forEach((element) => {
+
+            const data = {
+                "candidate_name": element.candidate_name,
+                "direct_client": element.direct_client,
+                "end_client": element.end_client,
+                "contact_number": element.contact_number,
+                "job_id": element.job_id,
+                "job_title": element.job_title,
+                "visa_status": element.visa_status,
+                "job_duration": element.job_duration,
+                "bill_rate": parseFloat(element.bill_rate),
+                "pay_rate": parseFloat(element.pay_rate),
+                "margin": parseFloat(element.margin),
+                "tentative_start_date": element.tentative_start_date,
+                "start_date": element.start_date,
+                "employee_id": element.employee_id,
+                "team_lead": element.team_lead,
+                "accounts_manager": element.accounts_manager,
+                "created_date": new Date(),
+                "created_by": element.created_by,
+                "updated_date": "",
+                "status" : element.status,
+                "deleted" : 0
+            }
+
+            leads.insertOne(data, function (error, result) {
+
+                
+
+            })
+
+        })
+
+    }) */
+
     var perPage = req.body.perPage ? req.body.perPage : 10,
     page = req.body.page-1
     var search = req.body.search

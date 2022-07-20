@@ -197,9 +197,13 @@ const Employees = () => {
                   <strong>All Recruiters</strong>
                 </CCol>
                 <CCol xs={8}>
-                  <CButton color="primary" onClick={handleCreate} size="sm" className="float-end">
-                    Create
-                  </CButton>
+                  { login_user && login_user.role !== 1 ? (
+                    <CButton color="primary" onClick={handleCreate} size="sm" className="float-end">
+                      Create
+                    </CButton>
+                  ) : (
+                    ''
+                  )}
                 </CCol>
               </CRow>
             </CCardHeader>

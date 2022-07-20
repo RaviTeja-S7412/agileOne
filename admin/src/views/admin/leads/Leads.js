@@ -285,7 +285,7 @@ const Leads = () => {
       setData(udata)
       setTotalRows(get_leads.total_users_count)
     }
-    if (login_user.role === 5) {
+    if (login_user.role === 5 || uri === "exit") {
       setHidecolumn(true)
     }
   }, [get_leads.leads, get_leads.get_leads])
@@ -364,7 +364,7 @@ const Leads = () => {
                 paginationTotalRows={totalRows}
                 paginationDefaultPage={currentPage}
                 onChangeRowsPerPage={handlePerRowsChange}
-                paginationRowsPerPageOptions={[10, 20, 30, 40, 50]}
+                paginationRowsPerPageOptions={[10, 20, 30, 40, 50, 100]}
                 onChangePage={handlePageChange}
                 subHeader
                 subHeaderComponent={<SearchInput submitFunction={searchData} setSearchtext={setSearchtext} />}
