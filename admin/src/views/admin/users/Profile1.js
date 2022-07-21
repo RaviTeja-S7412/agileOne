@@ -32,15 +32,14 @@ const UpdateProfile = () => {
   const [cpassword, setCPassword] = useState('')
   const [designation, setDesignation] = useState('')
   const login_user = JSON.parse(localStorage.getItem('user'))
-  const loginType = localStorage.getItem('loginType')
   const id = login_user && login_user._id
 
   useEffect(() => {
     if (id) {
-      dispatch(get_singleuser({ user_id: id, loginType: loginType }))
+      dispatch(get_singleuser({ user_id: id }))
     }
     if (udata && udata.is_user_added) {
-      // location('/admin/team-leads')
+      location(udata.get_data.uploads_folder + '/admin/team-leads')
     }
   }, [id, udata.is_user_added])
 
@@ -63,7 +62,6 @@ const UpdateProfile = () => {
     fdata.append('designation', designation)
     fdata.append('file', profile_image)
     fdata.append('old_picture', udata.get_data && udata.get_data.user_image)
-    fdata.append('role', udata.get_data && udata.get_data.role)
 
     dispatch(updateProfile(fdata))
   }
@@ -181,7 +179,7 @@ const UpdateProfile = () => {
                                     />
                                   </div>
                                 </CCol>
-                                {/* <CCol xs={10}>
+                                <CCol xs={10}>
                                   <div className="mb-3">
                                     <CFormLabel htmlFor="designation">Designation</CFormLabel>
                                     <CFormInput
@@ -195,7 +193,7 @@ const UpdateProfile = () => {
                                       onChange={(e) => setDesignation(e.target.value)}
                                     />
                                   </div>
-                                </CCol> */}
+                                </CCol>
                                 <CCol xs={10}>
                                   <div className="mb-3">
                                     <CFormLabel htmlFor="profile_image">Profile Image</CFormLabel>
