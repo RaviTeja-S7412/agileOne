@@ -357,35 +357,35 @@ exports.get_chartdata = (req, res) => {
                 var ostatus = false;
                 oCount.forEach((oc) => {
                     if(om[oc._id.month]){
-                        odata.push(oc.count);
+                        odata.push({"month":oc._id.month,"count":oc.count,"month_name":months[oc._id.month-1][oc._id.month]});
                         docount += oc.count;
                         ostatus = true;
                     }
                 })
                 if(!ostatus)
-                odata.push(0);
+                odata.push({"month":okey+1,"count":0,"month_name":months[okey][okey+1]});
 
                 var astatus = false;
                 aCount.forEach((ac) => {
                     if(om[ac._id.month]){
-                        adata.push(ac.count);
+                        adata.push({"month":ac._id.month,"count":ac.count,"month_name":months[ac._id.month-1][ac._id.month]});
                         dacount += ac.count;
                         astatus = true;
                     }
                 })
                 if(!astatus)
-                adata.push(0);
+                adata.push({"month":okey+1,"count":0,"month_name":months[okey][okey+1]});
 
                 var estatus = false;
                 eCount.forEach((ec) => {
                     if(om[ec._id.month]){
-                        edata.push(ec.count);
+                        edata.push({"month":ec._id.month,"count":ec.count,"month_name":months[ec._id.month-1][ec._id.month]});
                         decount += ec.count;
                         estatus = true;
                     }
                 })
                 if(!estatus)
-                edata.push(0);
+                edata.push({"month":okey+1,"count":0,"month_name":months[okey][okey+1]});
             })
 
             /* odata.forEach((val, fkey) => {
@@ -400,10 +400,8 @@ exports.get_chartdata = (req, res) => {
 
             return res.status(200).json({
                 chart_data: {
-                    "bar_offer_count": odata,
-                    "bar_active_count": adata,
-                    "bar_exit_count": edata,
-                    "doughnut_chart_count": [docount,dacount,decount],
+                    "bar_chart_count": fdata,
+                    "doughnut_chart_count": {"offer_count":docount,"active_count":dacount,"exit_count":decount},
                 }
             });
 

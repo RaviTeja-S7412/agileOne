@@ -171,8 +171,7 @@ exports.update_lead = (req, res) => {
 
 exports.get_leads = (req, res) => {
 
-
-   /*  leads.find({}).toArray(function (err, db_data){
+   /*   leads.find({}).toArray(function (err, db_data){
 
         db_data.forEach((element) => {
 
@@ -208,7 +207,7 @@ exports.get_leads = (req, res) => {
 
         })
 
-    }) */
+    }) */ 
 
     var perPage = req.body.perPage ? req.body.perPage : 10,
     page = req.body.page-1

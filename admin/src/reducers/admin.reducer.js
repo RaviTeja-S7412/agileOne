@@ -8,6 +8,7 @@ const initialState = {
   team_leads: [],
   get_team_leads: true,
   get_dashboard_data: true,
+  get_chart_data: true,
   employees: [],
   dashboard_data: [],
   get_employees: true,
@@ -84,6 +85,26 @@ export default (state = initialState, action) => {
       state = {
         ...state,
         get_dashboard_data: false,
+        message: action.payload.message,
+      }
+      break
+    case authConstants.GET_CHARTDATA_REQUEST:
+      state = {
+        ...state,
+        get_chart_data: true,
+      }
+      break
+    case authConstants.GET_CHARTDATA_SUCCESS:
+      state = {
+        ...state,
+        get_chart_data: false,
+        chart_data: action.payload.chart_data,
+      }
+      break
+    case authConstants.GET_CHARTDATA_FAILURE:
+      state = {
+        ...state,
+        get_chart_data: false,
         message: action.payload.message,
       }
       break

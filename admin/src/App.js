@@ -3,7 +3,7 @@ import { Route, Routes, useNavigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 // import { Router, browserHistory } from 'react-router'
 import './scss/style.scss'
-import { get_dashboard_data, get_userdata } from './helpers/Admin'
+import { get_chart_data, get_dashboard_data, get_userdata } from './helpers/Admin'
 import { getRoutes } from './actions/routes.actions'
 import {
   authConstants,
@@ -46,8 +46,12 @@ export default function App() {
       if (admin.get_dashboard_data) {
         dispatch(get_dashboard_data())
       }
+      if (admin.get_chart_data) {
+        dispatch(get_chart_data())
+      }
     }
     dispatch({ type: authConstants.GET_DASHBOARDDATA_REQUEST })
+    dispatch({ type: authConstants.GET_CHARTDATA_REQUEST })
     dispatch({ type: employeeConstants.GET_EMPLOYEES_REQUEST })
     dispatch({ type: leadConstants.GET_LEADS_REQUEST })
     dispatch({ type: authConstants.GET_USERS_REQUEST })

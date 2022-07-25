@@ -112,3 +112,31 @@ export const get_dashboard_data = () => {
     }
   }
 }
+
+export const get_chart_data = () => {
+  return async (dispatch) => {
+    let udata = JSON.parse(localStorage.getItem('user'))
+    dispatch({
+      type: authConstants.GET_CHARTDATA_REQUEST,
+    })
+
+    const res = await axios.post(`/admin/get_chartdata`, {
+      user_id: udata._id,
+      role: udata.role,
+    })
+
+    if (res.status === 200) {
+      return dispatch({
+        type: authConstants.GET_CHARTDATA_SUCCESS,
+        payload: res.data,
+      })
+    } else {
+      if (res.status === 400) {
+        dispatch({
+          type: authConstants.GET_CHARTDATA_FAILURE,
+          payload: { error: res.data.message },
+        })
+      }
+    }
+  }
+}
