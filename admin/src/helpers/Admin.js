@@ -113,17 +113,16 @@ export const get_dashboard_data = () => {
   }
 }
 
-export const get_chart_data = () => {
+export const get_chart_data = (data = {}) => {
   return async (dispatch) => {
     let udata = JSON.parse(localStorage.getItem('user'))
     dispatch({
       type: authConstants.GET_CHARTDATA_REQUEST,
     })
 
-    const res = await axios.post(`/admin/get_chartdata`, {
-      user_id: udata._id,
-      role: udata.role,
-    })
+    data['user_id'] = udata._id
+    data['role'] = udata.role
+    const res = await axios.post(`/admin/get_chartdata`, data)
 
     if (res.status === 200) {
       return dispatch({

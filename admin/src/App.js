@@ -1,6 +1,7 @@
 import React, { Suspense, useEffect } from 'react'
 import { Route, Routes, useNavigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
+import moment from 'moment'
 // import { Router, browserHistory } from 'react-router'
 import './scss/style.scss'
 import { get_chart_data, get_dashboard_data, get_userdata } from './helpers/Admin'
@@ -47,7 +48,13 @@ export default function App() {
         dispatch(get_dashboard_data())
       }
       if (admin.get_chart_data) {
-        dispatch(get_chart_data())
+        var sdate = moment(new Date(moment().startOf('month').format('YYYY-MM-DD'))).format(
+          'YYYY-MM-DD',
+        )
+        var edate = moment(new Date(moment().endOf('month').format('YYYY-MM-DD'))).format(
+          'YYYY-MM-DD',
+        )
+        dispatch(get_chart_data({ sdate: sdate, edate: edate }))
       }
     }
     dispatch({ type: authConstants.GET_DASHBOARDDATA_REQUEST })

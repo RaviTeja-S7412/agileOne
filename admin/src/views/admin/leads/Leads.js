@@ -285,7 +285,7 @@ const Leads = () => {
       setData(udata)
       setTotalRows(get_leads.total_users_count)
     }
-    if (login_user.role === 5 || uri === "exit") {
+    if (login_user.role === 5 || login_user.role === 1 || uri === "exit") {
       setHidecolumn(true)
     }
   }, [get_leads.leads, get_leads.get_leads])

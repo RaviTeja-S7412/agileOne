@@ -23,8 +23,8 @@ const Dashboard = () => {
   const admin = useSelector((state) => state.admin)
   const dashboard_data = admin.dashboard_data && admin.dashboard_data[0]
   const chart_data = admin.chart_data
-  const [fromDate, setFromDate] = useState(new Date())
-  const [toDate, setToDate] = useState(new Date())
+  const [fromDate, setFromDate] = useState(new Date(moment().startOf('month').format('YYYY-MM-DD')))
+  const [toDate, setToDate] = useState(new Date(moment().endOf('month').format('YYYY-MM-DD')))
 
   const location = useNavigate()
 
@@ -93,6 +93,14 @@ const Dashboard = () => {
         },
       },
     },
+    scales: {
+      y: {
+        ticks: {
+          stepSize: 1,
+          beginAtZero: true,
+        },
+      },
+    },
   }
 
   const pieoptions = {
@@ -115,7 +123,7 @@ const Dashboard = () => {
       },
       datalabels: {
         display: true,
-        color: 'white',
+        color: 'black',
         align: 'center',
         padding: {
           right: 0,
@@ -147,6 +155,7 @@ const Dashboard = () => {
       moment().subtract(1, 'month').startOf('month'),
       moment().subtract(1, 'month').endOf('month'),
     ],
+    'This Year': [moment().startOf('year'), moment().endOf('year')],
     'Last Year': [
       moment().subtract(1, 'year').startOf('year'),
       moment().subtract(1, 'year').endOf('year'),
@@ -156,7 +165,11 @@ const Dashboard = () => {
   const getChartdata = (event, picker) => {
     setFromDate(picker.startDate._d.toISOString())
     setToDate(picker.endDate._d.toISOString())
-    dispatch(get_chart_data())
+  }
+  const getCdata = () => {
+    var sdate = moment(fromDate).format('YYYY-MM-DD')
+    var edate = moment(toDate).format('YYYY-MM-DD')
+    dispatch(get_chart_data({ sdate: sdate, edate: edate }))
   }
   return (
     <>
@@ -270,6 +283,7 @@ const Dashboard = () => {
             initialSettings={{
               ranges: range,
             }}
+            onApply={getCdata}
           >
             <CButton color="primary">
               {moment(fromDate).format('LL')} to {moment(toDate).format('LL')}
@@ -335,9 +349,9 @@ const Dashboard = () => {
                     render: 'percentage',
                     data: chart_data && chart_data.doughnut_chart_count,
                     backgroundColor: [
-                      'rgb(255, 99, 132)',
-                      'rgb(54, 162, 235)',
                       'rgb(255, 205, 86)',
+                      'rgb(54, 162, 235)',
+                      'rgb(255, 99, 132)',
                     ],
                     hoverOffset: 4,
                   },

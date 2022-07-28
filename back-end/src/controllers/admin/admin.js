@@ -261,55 +261,38 @@ exports.get_chartdata = (req, res) => {
 
     const role = req.body.role;
     const user_id = req.body.user_id;
+    const sdate = new Date(req.body.sdate + 'T00:00:00.000Z');
+    const edate = new Date(req.body.edate + 'T23:59:59.999Z');
 
-    var empquery = {};
-    var tlquery = {};
-    var activequery = {};
-    var exitquery = {};
-    var offerquery = {};
+    var oquery = {};
+    var aquery = {};
+    var equery = {};
+    oquery["status"] = { "$exists": true, "$in": [2] };
+    aquery["status"] = { "$exists": true, "$in": [1] };
+    equery["status"] = { "$exists": true, "$in": [0] };
+    oquery["created_date"] = {"$gte": sdate,"$lte": edate};
+    aquery["created_date"] = {"$gte": sdate,"$lte": edate};
+    equery["created_date"] = {"$gte": sdate,"$lte": edate};
     if(role == 5){
-        // empquery["team_lead"] = user_id;
-        offerquery["status"] = { "$exists": true, "$in": [2] };
-        offerquery["employee_id"] = user_id;
-        activequery["status"] = { "$exists": true, "$in": [1] };
-        activequery["employee_id"] = user_id;
-        exitquery["status"] = { "$exists": true, "$in": [0] };
-        exitquery["employee_id"] = user_id;
+        oquery["employee_id"] = user_id;
+        aquery["employee_id"] = user_id;
+        equery["employee_id"] = user_id;
     }else if(role == 4){
-        empquery["team_lead"] = user_id;
-        offerquery["status"] = { "$exists": true, "$in": [2] };
-        offerquery["team_lead"] = user_id;
-        activequery["status"] = { "$exists": true, "$in": [1] };
-        activequery["team_lead"] = user_id;
-        exitquery["status"] = { "$exists": true, "$in": [0] };
-        exitquery["team_lead"] = user_id;
+        oquery["team_lead"] = user_id;
+        aquery["team_lead"] = user_id;
+        equery["team_lead"] = user_id;
     }else if(role == 3){
-        // empquery["team_lead"] = user_id;
-        offerquery["status"] = { "$exists": true, "$in": [2] };
-        offerquery["accounts_manager"] = user_id;
-        activequery["status"] = { "$exists": true, "$in": [1] };
-        activequery["accounts_manager"] = user_id;
-        exitquery["status"] = { "$exists": true, "$in": [0] };
-        exitquery["accounts_manager"] = user_id;
-        tlquery["role"] = { "$exists": true, "$in": [4] }
-        tlquery["created_by"] = user_id
-    }else if(role == 2){
-        // empquery["team_lead"] = user_id;
-        offerquery["status"] = { "$exists": true, "$in": [2] };
-        activequery["status"] = { "$exists": true, "$in": [1] };
-        exitquery["status"] = { "$exists": true, "$in": [0] };
-    }else if(role == 1){
-        offerquery["status"] = { "$exists": true, "$in": [2] };
-        activequery["status"] = { "$exists": true, "$in": [1] };
-        exitquery["status"] = { "$exists": true, "$in": [0] };
-        tlquery["role"] = { "$exists": true, "$in": [4] }
+        oquery["accounts_manager"] = user_id;
+        aquery["accounts_manager"] = user_id;
+        equery["accounts_manager"] = user_id;
     }
-    
+
+    console.log(aquery);
     leads.aggregate([
         { "$facet": {
             "oCount": [
                 { "$sort": { 'created_date' : 1 } },
-                { "$match" : { "status": { "$exists": true, "$in": [2] }}},
+                { "$match" : oquery},
                 { $group: {
                     _id: {month: {$month: "$created_date"}},
                     count: { $sum: 1}
@@ -317,7 +300,7 @@ exports.get_chartdata = (req, res) => {
             ],
             "aCount": [
                 { "$sort": { 'created_date' : 1 } },
-                { "$match" : { "status": { "$exists": true, "$in": [1] }}},
+                { "$match" : aquery},
                 { $group: {
                     _id: {month: {$month: "$created_date"}},
                     count: { $sum: 1}
@@ -325,7 +308,7 @@ exports.get_chartdata = (req, res) => {
             ], 
             "eCount": [
                 { "$sort": { 'created_date' : 1 } },
-                { "$match" : { "status": { "$exists": true, "$in": [0] }}},
+                { "$match" : equery},
                 { $group: {
                     _id: {month: {$month: "$created_date"}},
                     count: { $sum: 1}
@@ -343,7 +326,6 @@ exports.get_chartdata = (req, res) => {
             var odata = [];
             var adata = [];
             var edata = [];
-            var fdata = [];
             var docount = 0;
             var dacount = 0;
             var decount = 0;
@@ -387,17 +369,6 @@ exports.get_chartdata = (req, res) => {
                 if(!estatus)
                 edata.push(0);
             })
-
-            /* odata.forEach((val, fkey) => {
-                fdata.push({
-                    "month": val.month,
-                    "month_name": val.month_name,
-                    "offer_count": val.count,
-                    "active_count": adata[fkey]["count"],
-                    "exit_count": edata[fkey]["count"]
-                });
-            }) */
-
             return res.status(200).json({
                 chart_data: {
                     "bar_offer_count": odata,
